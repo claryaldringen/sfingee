@@ -18,7 +18,6 @@ function mapStateToProps(state, ownProps) {
 	let userId = null;
 	let max = 0;
 	for(var [id, messages] of state.chat) {
-		console.log(messages);
 		let userUnread = 0;
 		for(let i = messages.length-1; i > -1; i--) {
 			if(state.user.user.id == messages[i][0] || messages[i][2] == '{{READED}}') {

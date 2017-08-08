@@ -1,7 +1,6 @@
 
 import React from 'react'
 import { Field, reduxForm, SubmissionError } from 'redux-form';
-import { push } from 'react-router-redux'
 
 import { signInUserFailure, setNewPassword } from '../actions/user'
 import { renderInput } from './InputField';
@@ -18,7 +17,7 @@ const validateAndSignInUser = (values, dispatch) => {
 				throw new SubmissionError(result.payload.response.data);
 			}
 
-			dispatch(push('/'));
+			window.location.href = '/';
 		});
 };
 

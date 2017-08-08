@@ -2,8 +2,26 @@
 import React from 'react'
 
 import Card from '../containers/CardContainer'
+import { getAuthHash } from '../tools/auth'
 
 export default class People extends React.Component {
+
+	load() {
+		const query = {
+			authhash: getAuthHash(),
+			page: 0,
+			man: this.props.man,
+			woman: this.props.woman,
+			minage: this.props.slider.start,
+			maxage: this.props.slider.end,
+		};
+
+		this.props.load(query);
+	}
+
+	componentWillMount() {
+		this.load()
+	}
 
 	render() {
 		var cards = [];

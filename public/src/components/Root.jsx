@@ -7,6 +7,7 @@ import App from './App';
 import HomePage from './HomePage';
 import PeoplePage from '../containers/PeopleContainer';
 import Renew from '../containers/RenewContainer'
+import Profile from '../containers/ProfileContainer'
 
 export default class Root extends React.Component {
 
@@ -19,6 +20,7 @@ export default class Root extends React.Component {
 				<Router history={history}>
 					<Route path="/app" component={App}>
 						<Route path="people" component={PeoplePage}/>
+						<Route path="profile/:userId" component={Profile} />
 					</Route>
 					<Route path="/renewpassword/:hash" component={Renew} />
 					<Route path="/" component={HomePage} />

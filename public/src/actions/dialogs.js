@@ -6,6 +6,10 @@ export const HIDE_FORGOTTEN_PASSWORD_DIALOG = 'HIDE_FORGOTTEN_PASSWORD_DIALOG';
 export const TRANSFORM_FORGOTTEN_PASSWORD_DIALOG = 'TRANSFORM_FORGOTTEN_PASSWORD_DIALOG';
 export const OPEN_CHAT_DIALOG = 'OPEN_CHAT_DIALOG';
 export const HIDE_CHAT_DIALOG = 'HIDE_CHAT_DIALOG';
+export const OPEN_UPLOAD_DIALOG = 'OPEN_UPLOAD_DIALOG';
+export const HIDE_UPLOAD_DIALOG = 'HIDE_UPLOAD_DIALOG';
+export const SHOW_VIEWER = 'SHOW_VIEWER';
+export const HIDE_VIEWER = 'HIDE_VIEWER';
 
 export function showSignUpDialog() {
 	return {type: SHOW_SIGNUP_DIALOG};
@@ -35,4 +39,18 @@ export function hideChatDialog() {
 	return {type: HIDE_CHAT_DIALOG}
 }
 
+export function openUploadDialog(userId) {
+	return {type: OPEN_UPLOAD_DIALOG}
+}
 
+export function hideUploadDialog() {
+	return {type: HIDE_UPLOAD_DIALOG}
+}
+
+export function showViewer(index) {
+	return {type: SHOW_VIEWER, index: index};
+}
+
+export function hideViewer() {
+	return {type: HIDE_VIEWER};
+}

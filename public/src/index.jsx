@@ -17,6 +17,7 @@ import user from './reducers/User'
 import people from './reducers/People'
 import filter from './reducers/Filter'
 import chat from './reducers/Chat'
+import images from './reducers/Images';
 
 const createStoreWithMiddleware = applyMiddleware(routerMiddleware(browserHistory), promise)(createStore);
 
@@ -28,7 +29,8 @@ const reducer = combineReducers({
 	filter: filter,
 	routing: routerReducer,
 	form: formReducer,
-	chat: chat
+	chat: chat,
+	images: images
 });
 
 const store = createStoreWithMiddleware(reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());

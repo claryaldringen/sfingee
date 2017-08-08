@@ -25,10 +25,6 @@ export default class Filter extends React.Component {
 		this.props.load(query);
 	}
 
-	componentDidMount() {
-		this.load()
-	}
-
 	render() {
 
 		return(

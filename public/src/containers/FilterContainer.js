@@ -1,10 +1,9 @@
 import Filter from '../components/Filter';
 import { connect } from 'react-redux';
-import axios from 'axios'
-import { push } from 'react-router-redux'
+import { push } from 'react-router-redux';
 
 import { toggleMan, toggleWoman, setAge, setFilter } from '../actions/filter'
-import { getPeopleSuccess } from '../actions/people'
+import { loadUsers } from '../tools/utils'
 
 const mapDispatchToProps = (dispatch) => {
 	return {
@@ -20,20 +19,8 @@ const mapDispatchToProps = (dispatch) => {
 			}
 		},
 		load(query) {
-			axios.get('/api/users/', {params: query}).then((result) => {
-
-				if (result.status !== 200) {
-
-				}
-
-				if(result.data.error) {
-					if (result.data.error.code == 'NOT_AUTHORIZED') {
-						dispatch(push('/'));
-					}
-				}
-
-				dispatch(getPeopleSuccess(result.data))
-			})
+			dispatch(push('/app/people'));
+			loadUsers(query, dispatch);
 		},
 		setFilter(filter) {
 			dispatch(setFilter(filter));

@@ -19,6 +19,10 @@ export const SEND_FP_FAILURE = 'SEND_FP_FAILURE';
 export const GET_USER = 'GET_USER';
 export const SET_USER = 'SET_USER';
 
+export const UPLOAD_IMAGES = 'UPLOAD_IMAGES';
+export const DELETE_IMAGE = 'DELETE_IMAGE';
+export const SET_AS_AVATAR = 'SET_AS_AVATAR';
+
 export function signUpUser(formValues) {
 
 	let data = new FormData();
@@ -48,7 +52,7 @@ export function signUpUserFailure() {
 }
 
 export function signInUser(formValues) {
-	const request = axios.get('api/authhash/' + formValues.siemail + '/' + formValues.sipassword);
+	const request = axios.get('api/authhash/' + formValues.siemail.toLowerCase() + '/' + formValues.sipassword);
 	return {
 		type: SIGNIN_USER,
 		payload: request
@@ -102,3 +106,34 @@ export function setUser(user) {
 	return {type: SET_USER, user: user};
 }
 
+export function uploadImages(formValues) {
+
+	const uploaders = formValues.image.map( (image,i) => {
+		const data = new FormData();
+		data.append('authhash', getAuthHash());
+		data.append('index', i);
+		data.append('count', formValues.image.length);
+		data.append('photos', image);
+		return axios.post('/api/images', data, {headers: { "X-Requested-With": "XMLHttpRequest" }});
+	});
+
+
+	return {
+		type: UPLOAD_IMAGES,
+		payload: axios.all(uploaders)
+	};
+}
+
+export function deleteImage(index, userId, imageId, isAvatar) {
+
+	axios.delete('/api/image/' + getAuthHash() + '/' + imageId + '/' + isAvatar);
+
+	return({type: DELETE_IMAGE, index: index, userId: userId})
+}
+
+export function setAsAvatar(index, userId, image, imageId) {
+
+	axios.put('/api/image/avatar/' + getAuthHash() + '/' + imageId);
+
+	return {type: SET_AS_AVATAR, index: index, userId: userId, imageId: imageId, image: image}
+}

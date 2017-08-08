@@ -21,6 +21,12 @@ const mapDispatchToProps = (dispatch) => {
 					return;
 				}
 
+				if(result.payload.data.error) {
+					if (result.payload.data.error.code == 'NOT_AUTHORIZED') {
+						window.location.href = '/';
+					}
+				}
+
 				dispatch(setUser(result.payload.data));
 				dispatch(loadChats()).then((result) => {
 

@@ -1,14 +1,16 @@
 
 import React from 'react'
 
-export default class Card extends React.Component {
+import { getAge } from '../tools/utils';
 
-	getAge() {
-		return Math.floor((Date.now() - (new Date(this.props.data.birthdate)).getTime())/(31556926*1000))
-	}
+export default class Card extends React.Component {
 
 	openChat(id) {
 		this.props.openChat(id);
+	}
+
+	redirect(id) {
+		this.props.openProfile(id);
 	}
 
 	render() {
@@ -30,14 +32,14 @@ export default class Card extends React.Component {
 		}
 
 		return(
-			<div className="col-lg-3">
+			<div className="col-lg-3" onClick={this.redirect.bind(this, this.props.data.id)}>
 				<div className="col-sm-12" style={style}>
 				<div style={{height: 260}}>
 					{online}
 					<img src={'/uploads/' + this.props.data.email + '/' + this.props.data.image + '.' + this.props.data.extension} style={{width: '100%'}}/>
 				</div>
 				<h3 style={{paddingLeft: 12}}>
-					{this.props.data.name.split(' ')[0]}, {this.getAge()}
+					{this.props.data.name.split(' ')[0]}, {getAge(this.props.data.birthdate)}
 					<img src="/img/speech-bubble.png" style={{float: 'right', marginRight: 12}} onClick={this.openChat.bind(this, this.props.data.id)} />
 				</h3>
 				</div>

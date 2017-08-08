@@ -118,15 +118,32 @@ var user = {
 	},
 
 	getUser(id, done) {
-		console.log(id);
-		const sql = "SELECT id,name,birthdate,sex FROM user WHERE id=?";
+		const sql = "SELECT " +
+			"u.id," +
+			"u.name," +
+			"birthdate," +
+			"sex," +
+			"orientation," +
+			"relationship," +
+			"tall," +
+			"weight," +
+			"experience," +
+			"hair," +
+			"eyes," +
+			"show_weight AS showWeight," +
+			"hair_long AS hairLong," +
+			"description," +
+			"email," +
+			"CONCAT(i.name,'.',i.extension) AS avatar " +
+			"FROM user u\n" +
+			"JOIN image i ON i.user_id=u.id AND avatar=1\n" +
+      "WHERE u.id=?";
+
 		db(sql, [id], (err, data) => {
 			if (err) {
 				done(err);
 				return;
 			}
-
-			console.log(data);
 
 			done(false, data[0]);
 		});
