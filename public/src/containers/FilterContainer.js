@@ -33,7 +33,8 @@ function mapStateToProps(state, ownProps) {
 	return {
 		man: state.filter.man,
 		woman: state.filter.woman,
-		slider: {start: state.filter.minage, end: state.filter.maxage}
+		slider: {start: state.filter.minage, end: state.filter.maxage},
+		limit: state.filter.limit
 	};
 }
 

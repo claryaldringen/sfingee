@@ -38,12 +38,12 @@ class RenewPasswordForm extends React.Component{
 	render() {
 
 		return (
-			<div className="container">
+			<div style={{height: 180}}>
 				<form onSubmit={this.props.handleSubmit(validateAndSend)}>
 					<div className="form-group">
 						<Field name="rpemail" type="email" component={renderInput} label="Tvůj email"/>
 						<div className="form-group row col-sm-12">
-							<button className="btn btn-success btn-lg col-sm-4">Odeslat pokyny k obnovení hesla na email</button>
+							<button className="btn btn-success btn-lg col-sm-12">Odeslat pokyny k obnovení hesla na email</button>
 						</div>
 					</div>
 				</form>

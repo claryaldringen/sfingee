@@ -6,6 +6,7 @@ export const OPEN_CHAT = 'OPEN_CHAT';
 export const ADD_MESSAGE = 'ADD_MESSAGE';
 export const LOAD_CHATS = 'LOAD_CHATS';
 export const SET_CHATS = 'SET_CHATS';
+export const SET_CHAT_USERS = 'SET_CHAT_USERS';
 
 export function openChat(userId) {
 	return {type: OPEN_CHAT, userId: userId}
@@ -24,4 +25,8 @@ export function loadChats() {
 
 export function setChats(chats) {
 	return {type: SET_CHATS, chats: chats}
+}
+
+export function setChatUsers(users) {
+	return {type: SET_CHAT_USERS, users: users};
 }

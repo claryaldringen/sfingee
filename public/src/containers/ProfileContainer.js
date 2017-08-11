@@ -4,7 +4,9 @@ import { connect } from 'react-redux';
 import axios from 'axios'
 
 import { getAge } from '../tools/utils';
-import { getProfileSuccess } from '../actions/people'
+import { getProfileSuccess } from '../actions/people';
+import { openChatDialog } from '../actions/dialogs'
+import { getRelationship, getOrientation, getEyes, getHair, getHairLong, getExperience } from '../tools/codebook';
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -22,6 +24,9 @@ const mapDispatchToProps = (dispatch) => {
 
 			    dispatch(getProfileSuccess(result.data))
 		    });
+	    },
+	    openChat(id) {
+		    dispatch(openChatDialog(id));
 	    }
     }
 }
@@ -29,30 +34,15 @@ const mapDispatchToProps = (dispatch) => {
 
 function mapStateToProps(state, ownProps) {
 
-	let relationship = [
-		[null, 'Nezadaný', 'Zadaný', 'Rozvedený', 'Vdovec', 'V komplikovaném vztahu'],
-		[null, 'Nezadaná', 'Zadaná', 'Rozvedená', 'Vdova', 'V komplikovaném vztahu']
-	];
-
-	let orientation = [
-		[null, 'Hetero', 'Gay', 'Bi', 'Beru vše'],
-		[null, 'Hetero', 'Lesbi', 'Bi', 'Beru vše']
-	];
-
-	let eyes = ['modré', 'hnědé', 'zelené', 'oříškové'];
-	let hair = ['platinové', 'blonďaté', 'špinavě blonďaté', 'hnědé', 'zrzavé', 'červené', 'černé'];
-	let hairLong = ['', 'velmi krátké', 'krátké', 'delší', 'dlouhé', 'velmi dlouhé'];
-	let experience = [null, 'Žádné', 'Málo', 'Tak akorát', 'Celkem dost', 'Mnoho'];
-
 	var user = {name: '', birthdate: '1998-01-01', sex: 0, relationship: 0};
   for(var userIndex = 0; userIndex < state.people.length; userIndex++) {
     user = state.people[userIndex];
     if(user.id == ownProps.params.userId) break;
   }
-	if(user == null || user.relationship == null) return {};
+	if(user == null || user.sex == null) return {};
 
   let visage = '';
-  if(user.showWeight) {
+  if(user.showWeight && user.tall && user.weight) {
   	visage += user.tall + ' cm, ' + user.weight + ' kg';
   }
 
@@ -80,24 +70,43 @@ function mapStateToProps(state, ownProps) {
   }
 
   if(user.eyes) {
-	  visage += ', ' + eyes[user.eyes] + ' oči';
+	  visage += ', ' + getEyes()[user.eyes] + ' oči';
   }
 
 	if(user.hair) {
-		visage += ', ' + hairLong[user.hairLong] + ' ' + hair[user.hair] + ' vlasy';
+		visage += ', ' + getHairLong()[user.hairLong] + ' ' + getHair()[user.hair] + ' vlasy';
 	}
+
+  const date = user.birthdate.split('T')[0].split('-');
 
 	return {
 		name: user.name,
     age: getAge(user.birthdate),
-    relationship: relationship[user.sex][user.relationship],
-    orientation: orientation[user.sex][user.orientation],
+    relationship: getRelationship()[user.sex][user.relationship],
+    orientation: getOrientation()[user.sex][user.orientation],
     visage: visage,
 	  description: user.description,
-    experience: experience[user.experience],
+    experience: getExperience()[user.experience],
 	  lastActivity: user.lastActivity,
 		userIndex: userIndex,
-	  write: user.id == state.user.user.id
+	  write: user.id == state.user.user.id,
+		sex: user.sex,
+		initialValues: {
+    	name: user.name,
+			day: date[2],
+			month: date[1],
+			year: date[0],
+    	orientation: user.orientation,
+			relationship: user.relationship,
+			tall: user.tall,
+			weight: user.weight,
+			eyes: user.eyes,
+    	hair: user.hair,
+			hairLong: user.hairLong,
+			experience: user.experience,
+			description: user.description
+		},
+		loading: state.user.loading
   };
 }
 

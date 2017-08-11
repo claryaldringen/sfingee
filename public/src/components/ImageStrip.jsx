@@ -87,6 +87,23 @@ export default class ImageStrip extends React.Component {
 			);
 		});
 
+		let controls = [];
+		if(this.props.images.length > 6) {
+			const leftStyle = {position: 'absolute',top: 48,left: 8, background: 'rgba(0,0,0,0.7)', padding: 8, borderRadius: 32, cursor: 'pointer', zIndex: 2};
+			const rightStyle = {position: 'absolute',top: 48,right: 8, background: 'rgba(0,0,0,0.7)', padding: 8, borderRadius: 32, cursor: 'pointer', zIndex: 2};
+
+			controls.push(
+				<div key="c1" style={leftStyle} onClick={this.leftClick.bind(this)}>
+					<img src="/img/left.png" width={32} height={32} />
+				</div>
+			);
+			controls.push(
+				<div key="c2" style={rightStyle} onClick={this.rightClick.bind(this)}>
+					<img src="/img/right.png" width={32} height={32} />
+				</div>
+			);
+		}
+
 		if(this.props.write) {
 			htmlImages.unshift(
 				<div key={'image_write'} style={{background: 'blue', width: 142, height: 142, float: 'left', overflow: 'hidden'}} onClick={this.props.openUploadDialog} >
@@ -95,17 +112,9 @@ export default class ImageStrip extends React.Component {
 			)
 		}
 
-		const leftStyle = {position: 'absolute',top: 48,left: 8, background: 'rgba(0,0,0,0.7)', padding: 8, borderRadius: 32, cursor: 'pointer', zIndex: 2};
-		const rightStyle = {position: 'absolute',top: 48,right: 8, background: 'rgba(0,0,0,0.7)', padding: 8, borderRadius: 32, cursor: 'pointer', zIndex: 2};
-
 		return(
-			<div style={{position: 'relative', overflow: 'hidden'}}>
-				<div style={leftStyle} onClick={this.leftClick.bind(this)}>
-					<img src="/img/left.png" width={32} height={32} />
-				</div>
-				<div style={rightStyle} onClick={this.rightClick.bind(this)}>
-					<img src="/img/right.png" width={32} height={32} />
-				</div>
+			<div style={{position: 'relative', overflow: 'hidden', background: '#999'}}>
+				{controls}
 				<div style={{width: 142*htmlImages.length}}>
 					{htmlImages}
 				</div>

@@ -1,8 +1,8 @@
 
-import { TOGGLE_MAN, TOGGLE_WOMAN, SET_AGE,SET_FILTER } from '../actions/filter'
+import { TOGGLE_MAN, TOGGLE_WOMAN, SET_AGE,SET_FILTER, ADD_LIMIT, SET_LIMIT } from '../actions/filter'
 
 const json = sessionStorage.getItem('filter');
-const INITIAL_STATE = json ? JSON.parse(json) : {man: false, woman: true, minage: 18, maxage: 30};
+const INITIAL_STATE = json ? { ...JSON.parse(json), ...{limit: 0, maxLimit: 0}}  : {man: false, woman: true, minage: 18, maxage: 30, limit: 0, maxLimit: 0};
 
 export default function(state = INITIAL_STATE, action) {
 
@@ -16,6 +16,10 @@ export default function(state = INITIAL_STATE, action) {
 			return { ...state, minage: action.min, maxage: action.max};
 		case SET_FILTER:
 			return action.filter;
+		case ADD_LIMIT:
+			return  { ...state, maxLimit: state.limit == state.maxLimit ? state.maxLimit + 20 : state.maxLimit};
+		case SET_LIMIT:
+			return { ...state, limit: action.limit};
 		default:
 			return state;
 	}

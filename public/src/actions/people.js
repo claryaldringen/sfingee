@@ -7,5 +7,9 @@ export function getPeopleSuccess(people) {
 }
 
 export function getProfileSuccess(profile) {
+
+	profile.image = profile.images[0].name;
+	profile.extension = profile.images[0].extension;
+
 	return {type: GET_PROFILE_SUCCESS, profile: profile}
 }

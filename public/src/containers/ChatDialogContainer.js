@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { hideChatDialog,openChatDialog } from '../actions/dialogs'
 import { getUser, setUser } from '../actions/user'
-import { addMessage, loadChats, setChats } from '../actions/chat'
+import { addMessage, loadChats, setChats, setChatUsers } from '../actions/chat'
 
 
 const mapDispatchToProps = (dispatch) => {
@@ -34,7 +34,8 @@ const mapDispatchToProps = (dispatch) => {
 						return;
 					}
 
-					dispatch(setChats(result.payload.data));
+					dispatch(setChatUsers(result.payload.data.users));
+					dispatch(setChats(result.payload.data.chats));
 				});
 			});
 		},
@@ -49,16 +50,7 @@ function mapStateToProps(state, ownProps) {
 
 	let users = [];
 	for(let key of state.chat.keys()) {
-		for(let i = 0; i < state.people.length; i++) {
-			let user = state.people[i];
-			if(user.id == key) {
-				users.push(
-					{id: user.id, image: '/uploads/' + user.email + '/' + user.image + '.' + user.extension, name: user.name, lastActivity: user.lastActivity, unread: 0}
-					);
-				break;
-			}
-		}
-
+		users.push(state.chatUser[key]);
 	}
 
 	let userId = null;

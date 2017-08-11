@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import { Router, Route, IndexRoute } from 'react-router'
 
 import App from './App';
-import HomePage from './HomePage';
+import HomePage from '../containers/HomePageContainer';
 import PeoplePage from '../containers/PeopleContainer';
 import Renew from '../containers/RenewContainer'
 import Profile from '../containers/ProfileContainer'

@@ -14,6 +14,11 @@ var user = {
 					return;
 				}
 				db("INSERT INTO user (name,password,email,birthdate,sex) VALUES (?,?,?,?,?)", [user.name, hash, user.email, user.birthdate, user.sex], (err, results) => {
+					if(err) {
+						done(err);
+						return;
+					}
+
 					this.createAvatar({userId: results.insertId, image: user.image}, (err, results2) => {
 						results2.insertId = results.insertId;
 						done(err, results2)
@@ -29,8 +34,13 @@ var user = {
 	},
 
 	updateUser(data, done) {
+		console.log(data);
 		let id = data.id;
 		delete(data.id);
+		if(data.hairLong) {
+			data['hair_long'] = data.hairLong;
+			delete(data.hairLong);
+		}
 		db("UPDATE user SET ? WHERE id = ?", [data, id], done);
 	},
 
@@ -52,17 +62,34 @@ var user = {
 
 	getUsers(data, userId, done) {
 
-		const sex = {'truefalse': 'sex=0 AND ', 'falsetrue': 'sex=1 AND', 'truetrue': '', 'falsefalse': ''}[data.man+data.woman];
-
-		const min = new Date(Date.now() - (data.maxage*1+1)*31556926000);
-		const max = new Date(Date.now() - (data.minage*1-1)*31556926000);
-
-		const sql = `SELECT u.id,u.name,u.email,u.birthdate,i.name AS image,i.extension 
+		if(data.id) {
+			const sql = `SELECT u.id,u.name,u.email,u.birthdate,i.name AS image,i.extension 
 			FROM user u 
 			JOIN image i ON i.user_id=u.id AND i.avatar=1 
-			WHERE ${sex} u.active > 0 AND birthdate BETWEEN ? AND ? AND u.id != ?`;
+			WHERE u.id IN (?)`;
 
-		db(sql, [min, max, userId], done);
+			db(sql, [data.id], done);
+		} else {
+			const sex = {
+				'truefalse': 'sex=0 AND ',
+				'falsetrue': 'sex=1 AND',
+				'truetrue': '',
+				'falsefalse': ''
+			}[data.man + data.woman];
+
+			const min = new Date(Date.now() - (data.maxage * 1 + 1) * 31556926000);
+			const max = new Date(Date.now() - (data.minage * 1 - 1) * 31556926000);
+
+			const sql = `SELECT u.id,u.name,u.email,u.birthdate,i.name AS image,i.extension 
+			FROM user u 
+			JOIN image i ON i.user_id=u.id AND i.avatar=1 
+			WHERE ${sex} u.active > 0 AND birthdate BETWEEN ? AND ? AND u.id != ?
+			ORDER BY u.id DESC
+			LIMIT ?,?
+			`;
+
+			db(sql, [min, max, userId, data.limit ? data.limit*1 : 0, 21], done);
+		}
 	},
 
 	getRenewHash(email, done) {
@@ -147,8 +174,7 @@ var user = {
 
 			done(false, data[0]);
 		});
-	}
-
+	},
 
 };
 

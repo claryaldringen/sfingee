@@ -5,12 +5,13 @@ import { getAge } from '../tools/utils';
 
 export default class Card extends React.Component {
 
-	openChat(id) {
-		this.props.openChat(id);
+	openChat(event) {
+		event.stopPropagation()
+		this.props.openChat(this.props.data.id);
 	}
 
-	redirect(id) {
-		this.props.openProfile(id);
+	redirect() {
+		this.props.openProfile(this.props.data.id);
 	}
 
 	render() {
@@ -32,16 +33,16 @@ export default class Card extends React.Component {
 		}
 
 		return(
-			<div className="col-lg-3" onClick={this.redirect.bind(this, this.props.data.id)}>
+			<div className="col-lg-3" onClick={this.redirect.bind(this)} >
 				<div className="col-sm-12" style={style}>
-				<div style={{height: 260}}>
+				<div style={{height: 240, overflow: 'hidden'}}>
 					{online}
 					<img src={'/uploads/' + this.props.data.email + '/' + this.props.data.image + '.' + this.props.data.extension} style={{width: '100%'}}/>
 				</div>
-				<h3 style={{paddingLeft: 12}}>
+				<h4 style={{paddingLeft: 12}}>
 					{this.props.data.name.split(' ')[0]}, {getAge(this.props.data.birthdate)}
-					<img src="/img/speech-bubble.png" style={{float: 'right', marginRight: 12}} onClick={this.openChat.bind(this, this.props.data.id)} />
-				</h3>
+					<img src="/img/speech-bubble.png" style={{position: 'absolute', bottom: 6, right: 6}} onClick={this.openChat.bind(this)} />
+				</h4>
 				</div>
 			</div>
 		);

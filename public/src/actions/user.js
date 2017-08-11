@@ -19,6 +19,9 @@ export const SEND_FP_FAILURE = 'SEND_FP_FAILURE';
 export const GET_USER = 'GET_USER';
 export const SET_USER = 'SET_USER';
 
+export const UPDATE_USER = 'UPDATE_USER';
+export const UPDATE_USER_DONE = 'UPDATE_USER_DONE';
+
 export const UPLOAD_IMAGES = 'UPLOAD_IMAGES';
 export const DELETE_IMAGE = 'DELETE_IMAGE';
 export const SET_AS_AVATAR = 'SET_AS_AVATAR';
@@ -136,4 +139,15 @@ export function setAsAvatar(index, userId, image, imageId) {
 	axios.put('/api/image/avatar/' + getAuthHash() + '/' + imageId);
 
 	return {type: SET_AS_AVATAR, index: index, userId: userId, imageId: imageId, image: image}
+}
+
+export function updateUser(formValues) {
+
+	formValues.authhash = getAuthHash();
+
+	return {type: UPDATE_USER, payload: axios.put('/api/user', formValues)}
+}
+
+export function updateUserDone() {
+	return {type: UPDATE_USER_DONE}
 }

@@ -1,13 +1,10 @@
 import SignInForm from '../components/SignInForm';
 import { connect } from 'react-redux';
 
-import { showSignUpDialog, showForgottenPasswordDialog } from '../actions/dialogs'
+import { showForgottenPasswordDialog } from '../actions/dialogs'
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		showSignUpDialog() {
-			dispatch(showSignUpDialog());
-		},
 		showForgottenPasswordDialog() {
 			dispatch(showForgottenPasswordDialog())
 		}

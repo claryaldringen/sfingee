@@ -7,9 +7,9 @@ const INITIAL_STATE = [];
 export default function(state = INITIAL_STATE, action) {
 
 	switch(action.type) {
-
 		case GET_PEOPLE_SUCCESS:
 			return action.people;
+
 		case GET_PROFILE_SUCCESS:
 			let changed = false;
 			let newState = state.map( (item, index) => {
@@ -21,6 +21,7 @@ export default function(state = INITIAL_STATE, action) {
 			});
 			if(!changed) newState.push(action.profile);
 			return newState;
+
 		case DELETE_IMAGE:
 			return state.map( (item, index) => {
 				if(item.id == action.userId) {
@@ -28,21 +29,19 @@ export default function(state = INITIAL_STATE, action) {
 				}
 				return item;
 			});
+
 		case SET_AS_AVATAR:
 			return state.map( (item, index) => {
-				console.log(action);
 				if(item.id == action.userId) {
-					console.log(item);
 					item.images[0].avatar = 0;
 					let avatar = item.images.splice(action.index, 1)[0];
 					avatar.avatar = 1;
-					console.log(avatar);
 					item.images.unshift(avatar);
 					item.avatar = avatar.name + '.' + avatar.extension;
-					console.log(item);
 				}
 				return item;
 			});
+
 		default:
 			return state;
 	}

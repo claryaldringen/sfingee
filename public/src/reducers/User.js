@@ -1,6 +1,5 @@
 
-import { SIGNUP_USER, SIGNUP_USER_SUCCESS, SIGNUP_USER_FAILURE, SET_USER,SET_AS_AVATAR } from '../actions/user'
-import { SET_CHATS } from '../actions/chat'
+import { SIGNUP_USER, SIGNUP_USER_SUCCESS, SIGNUP_USER_FAILURE, SET_USER,SET_AS_AVATAR, UPDATE_USER, UPDATE_USER_DONE } from '../actions/user'
 
 const INITIAL_STATE = {error:null, email: null, registered: false, loading: false, user: {}};
 
@@ -19,6 +18,10 @@ export default function(state = INITIAL_STATE, action) {
 			let user = state.user;
 			user.avatar = action.image;
 			return { ...state, user: user };
+		case UPDATE_USER:
+			return { ...state, loading: true };
+		case UPDATE_USER_DONE:
+			return { ...state, loading: false };
 		default:
 			return state;
 	}

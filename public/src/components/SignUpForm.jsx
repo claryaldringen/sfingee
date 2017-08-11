@@ -4,7 +4,7 @@ import { Field, reduxForm, SubmissionError } from 'redux-form';
 import Dropzone from 'react-dropzone';
 const { DOM: { input } } = React;
 
-import { renderInput } from './InputField';
+import { renderInput, renderSelect, renderDateField } from './InputField';
 
 import validate from '../validators/SignUpFormValidator';
 import { signUpUser, signUpUserSuccess, signUpUserFailure } from '../actions/user'
@@ -34,27 +34,6 @@ const validateAndSignUpUser = (values, dispatch) => {
 
 class SignUpForm extends React.Component{
 
-	renderDateField({input, label, type, meta: {touched, error, warning} }) {
-
-		let min = {day: 1, month: 1, year: 1900}[type];
-		let max = {day: 32, month: 13, year: ((new Date(Date.now() - 17*31556926*1000)).getFullYear())}[type];
-		let options = [];
-		for(let i = min; i < max; i++) {
-			options.push(<option value={i} key={type + '_o_' + i}>{i}</option>);
-		}
-
-		return(
-		<div className="col-sm-4">
-			<div className="row">
-				<label className="col-sm-3 control-label">{label}:</label>
-				<div className="col-sm-8">
-					<select {...input} className="form-control input-lg">{options}</select>
-				</div>
-			</div>
-			{touched && ((error && <div className="alert alert-danger">{error}</div>) || (warning && <div className="alert alert-warning">{warning}</div>))}
-		</div>);
-	}
-
 	renderDropzone({ input, meta: { touched, error, warning } }) {
 		let img = null;
 		if(input.value[0]) {
@@ -77,20 +56,6 @@ class SignUpForm extends React.Component{
 		);
 	}
 
-	renderSelectField({ input, label }) {
-		return(
-			<div className="form-group">
-				<label className="col-sm-3 control-label">{label}:</label>
-				<div className="col-sm-9">
-					<select {...input} className="form-control input-lg">
-						<option value="0">Muž</option>
-						<option value="1">Žena</option>
-					</select>
-				</div>
-			</div>
-		);
-	}
-
 	render() {
 
 		let button = null;
@@ -107,12 +72,12 @@ class SignUpForm extends React.Component{
 					<Field name="name" type="text" component={renderInput} label="Tvé jméno"/>
 					<Field name="email" type="email" component={renderInput} label="Tvůj email"/>
 					<Field name="password" type="password" component={renderInput} label="Tvé heslo"/>
-					<Field name="sex" component={this.renderSelectField} label="Pohlaví"/>
+					<Field name="sex" options={[{id: 0, value: 'Muž'},{id: 1, value: 'Žena'}]} component={renderSelect} label="Pohlaví"/>
 					<div className="form-group">
 						<div className="col-sm-12">
-							<Field name="day" type="day" component={this.renderDateField} label="Den"/>
-							<Field name="month" type="month" component={this.renderDateField} label="Měsíc"/>
-							<Field name="year" type="year" component={this.renderDateField} label="Rok"/>
+							<Field name="day" type="day" component={renderDateField} label="Den"/>
+							<Field name="month" type="month" component={renderDateField} label="Měsíc"/>
+							<Field name="year" type="year" component={renderDateField} label="Rok"/>
 						</div>
 					</div>
 					<Field name="image" component={this.renderDropzone} />

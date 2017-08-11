@@ -20,7 +20,7 @@ export default class ChatUsers extends React.Component {
 			return(
 				<div key={'user_' + index} style={{height: 64, margin: 8, cursor: 'pointer', position: 'relative'}} onClick={this.props.openChat.bind(this, user.id)}>
 					<div style={{width: 64, height: 64, borderRadius: 32, overflow: 'hidden', float: 'left'}}>
-						<img src={user.image} width="96"/>
+						<img src={'/uploads/' + user.email + '/' + user.image + '.' + user.extension} width="96"/>
 						{unread}
 					</div>
 					<span style={{fontSize: 18, marginLeft: 8, fontWeight: 'bold'}}>

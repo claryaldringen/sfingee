@@ -8,11 +8,12 @@ export default class SignUpDialog extends React.Component {
 		if(!this.props.visibility) return null;
 
 		if(this.props.email) {
-			var content = <div style={{height: 100, textAlign: 'center'}}>
-				<span>Pokyny k obnovení hesla byly odeslány na adresu {this.props.email}.</span>
-				<br/>
-				<button className="btn btn-info btn-lg col-sm-4" onClick={this.props.hideForgottenPasswordDialog}>Beru na vědomí</button>
-			</div>
+			var content =
+				<div style={{height: 100, textAlign: 'center'}}>
+					<span>Pokyny k obnovení hesla byly odeslány na adresu {this.props.email}.</span>
+					<br/>
+					<button className="btn btn-info btn-lg col-sm-4" onClick={this.props.hideForgottenPasswordDialog}>Beru na vědomí</button>
+				</div>
 		} else {
 			var content = <RenewPasswordForm/>
 		}

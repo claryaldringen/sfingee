@@ -29,8 +29,6 @@ function mapStateToProps(state, ownProps) {
 
 	const user = state.people[ownProps.userIndex];
 
-	console.log(user.images);
-
 	return {
 		userId: user.id,
 		email: user.email,

@@ -131,7 +131,23 @@ router.post('/forgottenPasswordEmail', (req, res) => {
 });
 
 router.put('/user', (req, res) => {
-	User.setPassword(req.body, (err) => {
+
+	let method = null;
+	if(req.body.password) {
+		method = 'setPassword';
+	} else {
+		console.log(req.body);
+		if(!checkHash(req.body.authhash, res)) return;
+		req.body.id = cache.hashes[req.body.authhash].id;
+		delete(req.body.authhash);
+		req.body.birthdate = req.body.year + '-' + repair(req.body.month) + '-' + repair(req.body.day);
+		delete(req.body.year);
+		delete(req.body.month);
+		delete(req.body.day);
+		method = 'updateUser';
+	}
+
+	User[method](req.body, (err) => {
 		if(err) {
 			console.log(err);
 			res.json({error: err});
@@ -145,13 +161,29 @@ router.get('/chats/:authhash', (req, res) => {
 
 	if(!checkHash(req.params.authhash, res)) return;
 
-	Chat.getMessages(cache.hashes[req.params.authhash].id, (err, data) => {
+	const userId = cache.hashes[req.params.authhash].id;
+	Chat.getMessages(userId, (err, data) => {
 		if(err) {
 			console.log(err);
 			res.json({error: err});
 			return;
 		}
-		res.json(data);
+
+		User.getUsers({id: Object.keys(data)}, null, (err, usersData) => {
+			if(err) {
+				console.log(err);
+				res.json({error: err});
+				return;
+			}
+
+			let users = {};
+			for(let i = 0; i < usersData.length; i++) {
+				users[usersData[i].id] = usersData[i];
+			}
+
+			res.json({chats: data, users: users});
+		});
+
 	});
 
 });

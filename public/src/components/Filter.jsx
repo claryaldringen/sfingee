@@ -8,18 +8,18 @@ export default class Filter extends React.Component {
 	load() {
 		const query = {
 			authhash: getAuthHash(),
-			page: 0,
 			man: this.props.man,
 			woman: this.props.woman,
 			minage: this.props.slider.start,
 			maxage: this.props.slider.end,
+			limit: this.props.limit
 		};
 
 		sessionStorage.setItem('filter', JSON.stringify({
 			man: this.props.man,
 			woman: this.props.woman,
 			minage: this.props.slider.start,
-			maxage: this.props.slider.end
+			maxage: this.props.slider.end,
 		}));
 
 		this.props.load(query);

@@ -34,7 +34,7 @@ module.exports = {
 			},
 			{
 				test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-				loader: 'url-loader?limit=10000&mimetype=application/octet-stream'
+				loader: 'url-loader?limit=10000&mimetype=application/octet-stream&name=[name].[ext]'
 			},
 			{
 				test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,

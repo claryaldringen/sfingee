@@ -48,17 +48,16 @@ class LoginForm extends React.Component{
 		return (
 			<div className="container">
 				<form onSubmit={this.props.handleSubmit(validateAndSignUpUser)}>
-					<div className="form-group">
 						<Field name="siemail" type="email" component={renderInput} label="Tvůj email"/>
 						<Field name="sipassword" type="password" component={renderInput} label="Tvé heslo"/>
 						<div className="form-group row col-sm-12">
-							<button className="btn btn-success btn-lg col-sm-4">Přihlásit se</button>
-							<div className="col-sm-8">
-								Pokud zde ještě nemáte registraci, <a onClick={this.props.showSignUpDialog}>přidejte se</a>.
-								<a onClick={this.props.showForgottenPasswordDialog}>Zapomenuté heslo</a>
+							<button className="btn btn-success btn-lg col-sm-offset-2 col-sm-4">Přihlásit se</button>
+							<div className="col-sm-6">
+								<a onClick={this.props.showForgottenPasswordDialog} style={{fontSize: 18, cursor: 'pointer', color: '#5cb85c'}}>
+									Zapomněli jste heslo?
+								</a>
 							</div>
 						</div>
-					</div>
 				</form>
 			</div>
 		);
