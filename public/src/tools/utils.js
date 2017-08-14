@@ -22,7 +22,6 @@ export function loadUsers(query, dispatch) {
 
 		if(result.data.length > 20) {
 			result.data.splice(-1, 1);
-			console.log(result.data);
 			dispatch(addLimit());
 		}
 

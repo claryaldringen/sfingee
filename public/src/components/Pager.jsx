@@ -38,8 +38,6 @@ export default class Pager extends React.Component {
 		let page = this.props.limit/20;
 		let maxPage = Math.ceil(this.props.maxLimit/20);
 
-		console.log(page);
-		console.log(maxPage);
 		if(page > 0) {
 			circles.push(
 				<div key={'page_prev'} style={{border: 'solid 1px', background: '#FFFFFF',borderColor: '#0000FF', padding: '10px 12px', margin: 4, borderRadius: 32, cursor: 'pointer', zIndex: 2, float: 'left', cursor: 'pointer'}} onClick={this.handleClick.bind(this, this.props.limit - 20)}>

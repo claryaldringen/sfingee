@@ -152,13 +152,13 @@ export default class ChatDialog extends React.Component {
 							<button type="button" className="close" onClick={this.props.hideChatDialog}>
 								<span aria-hidden="true">&times;</span>
 							</button>
-							<h4 className="modal-title">{this.props.users[0].name}</h4>
+							<h4 className="modal-title">{this.props.title}</h4>
 						</div>
 						<div className="modal-body">
 							<div className="row">
 								<Users users={this.props.users} userId={this.props.user.id} openChat={this.openChat.bind(this)}/>
 								<div className="col-md-9">
-									<div style={{height: 640, overflowY: 'auto', overflowX: 'hidden'}} ref="main" >
+									<div style={{height: 540, overflowY: 'auto', overflowX: 'hidden'}} ref="main" >
 										{messages}
 										{readed}
 									</div>

@@ -5,8 +5,6 @@ const INITIAL_STATE = {};
 
 export default function(state = INITIAL_STATE, action) {
 
-	//console.log(action);
-
 	switch(action.type) {
 		case SET_CHAT_USERS:
 			return { ...state, ...action.users };

@@ -50,7 +50,8 @@ function mapStateToProps(state, ownProps) {
 
 	let users = [];
 	for(let key of state.chat.keys()) {
-		users.push(state.chatUser[key]);
+		const user = state.chatUser[key];
+		if(user) users.push(user);
 	}
 
 	let userId = null;
@@ -80,12 +81,15 @@ function mapStateToProps(state, ownProps) {
 
 	}
 
+	console.log(users);
+
 	return {
 		users: users,
 		visibility: state.dialogs.chatDialog,
 		conversation: conversation,
 		userId: userId,
 		user: state.user.user,
+		title: users[0] ? users[0].name : 'Vaše chaty',
 		chats: state.chat
 	};
 }

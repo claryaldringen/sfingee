@@ -7,7 +7,6 @@ import { setLimit } from '../actions/filter';
 const mapDispatchToProps = (dispatch) => {
 	return {
 		setLimit(limit) {
-			console.log(limit);
 			dispatch(setLimit(limit));
 		},
 		load(query) {
@@ -17,8 +16,6 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 function mapStateToProps(state, ownProps) {
-
-	console.log(state.filter);
 
 	return {
 		man: state.filter.man,

@@ -169,21 +169,24 @@ router.get('/chats/:authhash', (req, res) => {
 			return;
 		}
 
-		User.getUsers({id: Object.keys(data)}, null, (err, usersData) => {
-			if(err) {
-				console.log(err);
-				res.json({error: err});
-				return;
-			}
+		if(Object.keys(data).length) {
+			User.getUsers({id: Object.keys(data)}, null, (err, usersData) => {
+				if (err) {
+					console.log(err);
+					res.json({error: err});
+					return;
+				}
 
-			let users = {};
-			for(let i = 0; i < usersData.length; i++) {
-				users[usersData[i].id] = usersData[i];
-			}
+				let users = {};
+				for (let i = 0; i < usersData.length; i++) {
+					users[usersData[i].id] = usersData[i];
+				}
 
-			res.json({chats: data, users: users});
-		});
-
+				res.json({chats: data, users: users});
+			});
+		} else {
+			res.json({chats: {}, users: {}});
+		}
 	});
 
 });

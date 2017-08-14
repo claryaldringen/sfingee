@@ -12,13 +12,15 @@ export default class Messages extends React.Component {
 	openChat() {
 		this.props.openChat(this.props.userId);
 		let chat = this.props.chats.get(this.props.userId);
-		let lastMessage = chat[chat.length-1];
-		if(lastMessage && lastMessage[2] != '{{READED}}') {
-			this.socket.emit('chat message', JSON.stringify({
-				from: this.props.opener,
-				to: this.props.userId,
-				msg: '{{READED}}'
-			}));
+		if(chat) {
+			let lastMessage = chat[chat.length - 1];
+			if (lastMessage && lastMessage[2] != '{{READED}}') {
+				this.socket.emit('chat message', JSON.stringify({
+					from: this.props.opener,
+					to: this.props.userId,
+					msg: '{{READED}}'
+				}));
+			}
 		}
 	}
 

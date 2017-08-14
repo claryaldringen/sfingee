@@ -33,7 +33,7 @@ export default class ChatUsers extends React.Component {
 		});
 
 		return(
-			<div className="col-md-3" style={{borderRight: 'solid 1px #e5e5e5', height: 680}}>
+			<div className="col-md-3" style={{borderRight: 'solid 1px #e5e5e5', height: 580}}>
 				{users}
 			</div>);
 	}
