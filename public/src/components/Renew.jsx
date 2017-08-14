@@ -25,12 +25,43 @@ class Renew extends React.Component {
 
 	render() {
 		return(
-			<div style={{background: '#f7f7f7'}}>
-				<form onSubmit={this.props.handleSubmit(validateAndSignInUser)} className="form-horizontal">
-					<Field name="password1" type="password" component={renderInput} label="Nové heslo"/>
-					<Field name="password2" type="password" component={renderInput} label="Heslo znovu"/>
-					<button className="btn btn-success btn-lg">Změnit heslo</button>
-				</form>
+			<div>
+				<nav className="navbar navbar-inverse" style={{margin: 0, borderRadius: 0}}>
+					<div className="container">
+						<div className="navbar-header">
+							<a className="navbar-brand" href="/">
+								<span style={{fontSize: 48, color: '#FFF'}}>Sfingee</span>.com
+							</a>
+						</div>
+					</div>
+				</nav>
+				<div className="container" style={{fontSize: 24}}>
+					<div className="row">
+						<div className="col-md-8 col-md-offset-2">
+							<br />
+							<form onSubmit={this.props.handleSubmit(validateAndSignInUser)} className="form-horizontal">
+								<Field name="password1" type="password" component={renderInput} label="Nové heslo"/>
+								<Field name="password2" type="password" component={renderInput} label="Heslo znovu"/>
+								<button className="btn btn-success btn-lg col-md-offset-4 col-md-4">Změnit heslo</button>
+							</form>
+						</div>
+					</div>
+				</div>
+				<footer className="footer navbar-inverse" style={{position: 'absolute', bottom: 0, left: 0, width: '100%', padding: 12, margin: 0, borderRadius: 0, color: '#FFF'}}>
+					<div className="container">
+						<div className="col-md-6">
+							<a href="/termsofuse">Všeobecné podmínky užívání</a>
+							<br/><br/>
+							<a href="/privacypolicy">Ochrana soukromí</a>
+						</div>
+						<div className="col-md-6">
+							Provozovatel: <br />
+							Martin Zaražil <br />
+							IČ: 74901231 <br />
+							<a href="mailto:info@sfingee.com">info@sfingee.com</a>
+						</div>
+					</div>
+				</footer>
 			</div>
 		);
 	}

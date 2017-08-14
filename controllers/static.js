@@ -7,6 +7,14 @@ router.get(['/', '/app/*'], (req, res) => {
 	res.render('index', {});
 });
 
+router.get('/termsofuse', (req, res) => {
+	res.render('terms');
+});
+
+router.get('/privacypolicy', (req, res) => {
+	res.render('privacy');
+});
+
 router.get('/finishregistration/:hash', (req, res) => {
 	if(cache.hashes[req.params.hash]) {
 		User.updateUser({id: cache.hashes[req.params.hash].id, active: 1}, (err) => {

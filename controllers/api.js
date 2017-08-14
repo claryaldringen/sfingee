@@ -61,8 +61,8 @@ router.route('/user').post(upload.single('image'), (req, res) => {
 				res.send(err);
 				return;
 			}
+			res.json(data);
 		});
-		res.json(data);
 	});
 });
 
@@ -116,7 +116,7 @@ router.post('/forgottenPasswordEmail', (req, res) => {
 
 		router.mailer.send('renew', {
 			to: req.body.email,
-			subject: 'Sfinger.com - obnovení hesla',
+			subject: 'Sfingeee.com - obnovení hesla',
 			link: 'http://' + req.get('host') + '/renewpassword/' + data,
 		}, (err) => {
 			if(err) {
@@ -246,8 +246,16 @@ function checkHash(hash, res) {
 		res.json({error: {code: 'NOT_AUTHORIZED'}});
 		return false;
 	}
-	cache.hashes[hash].lastActivity = Date.now();
+	saveLastActivity(hash);
 	return true;
+}
+
+function saveLastActivity(hash) {
+	const now = Date.now();
+	if(cache.hashes[hash].lastActivity + 120000 < now) {
+		cache.hashes[hash].lastActivity = now;
+		User.setLastActivity(cache.hashes[hash].id);
+	}
 }
 
 module.exports = router;

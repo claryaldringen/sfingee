@@ -8,6 +8,7 @@ import HomePage from '../containers/HomePageContainer';
 import PeoplePage from '../containers/PeopleContainer';
 import Renew from '../containers/RenewContainer'
 import Profile from '../containers/ProfileContainer'
+import NotFound from './NotFound'
 
 export default class Root extends React.Component {
 
@@ -24,6 +25,7 @@ export default class Root extends React.Component {
 					</Route>
 					<Route path="/renewpassword/:hash" component={Renew} />
 					<Route path="/" component={HomePage} />
+					<Route path="*" component={NotFound} />
 				</Router>
 			</Provider>
 		);

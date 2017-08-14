@@ -4,7 +4,7 @@ import React from 'react';
 export function renderInput({ input, label, type, meta: { touched, error, warning } }) {
 	return(
 		<div className="form-group form-group-lg row">
-			<label for={'input' + input.name} className="col-sm-4 col-form-label input-lg">{label}:</label>
+			<label htmlFor={'input' + input.name} className="col-sm-4 col-form-label input-lg">{label}:</label>
 			<div className="col-sm-8">
 				<input {...input} placeholder={label} type={type} className="form-control input-lg" id={'input' + input.name} />
 				{touched && ((error && <div className="alert alert-danger">{error}</div>) || (warning && <div className="alert alert-warning">{warning}</div>))}

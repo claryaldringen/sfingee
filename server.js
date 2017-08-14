@@ -4,6 +4,8 @@ var bodyParser = require('body-parser');
 var mailer = require('express-mailer');
 var md5 = require('md5');
 var socketIo = require('socket.io');
+var favicon = require('serve-favicon');
+var path = require('path');
 
 var config = require('./config/config');
 var staticRouter = require('./controllers/static');
@@ -25,6 +27,12 @@ app.use(bodyParser.json());
 app.use('/api', apiRouter);
 app.use('/', staticRouter);
 app.use(express.static('public'));
+app.use(favicon(path.join(__dirname,'public','img','favicon.ico')));
+
+app.use(function(req, res, next) {
+	res.status(400);
+	res.redirect('/')
+});
 
 var server = app.listen(process.env.PORT || 8080);
 var io = socketIo(server);

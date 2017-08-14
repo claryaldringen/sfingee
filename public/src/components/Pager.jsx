@@ -17,6 +17,10 @@ export default class Pager extends React.Component {
 			woman: this.props.woman,
 			minage: this.props.slider.start,
 			maxage: this.props.slider.end,
+			hetero: this.props.hetero,
+			homo: this.props.homo,
+			bi: this.props.bi,
+			online: this.props.online,
 			limit: limit !== null ? limit : this.props.limit,
 		};
 

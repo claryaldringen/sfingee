@@ -2,7 +2,7 @@ import Filter from '../components/Filter';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
-import { toggleMan, toggleWoman, setAge, setFilter } from '../actions/filter'
+import { toggleMan, toggleWoman, setAge, setFilter, toggleHetero, toggleHomo, toggleBi, toggleOnline } from '../actions/filter'
 import { loadUsers } from '../tools/utils'
 
 const mapDispatchToProps = (dispatch) => {
@@ -24,6 +24,18 @@ const mapDispatchToProps = (dispatch) => {
 		},
 		setFilter(filter) {
 			dispatch(setFilter(filter));
+		},
+		toggleHetero() {
+			dispatch(toggleHetero());
+		},
+		toggleHomo() {
+			dispatch(toggleHomo());
+		},
+		toggleBi() {
+			dispatch(toggleBi());
+		},
+		toggleOnline() {
+			dispatch(toggleOnline());
 		}
 	};
 }
@@ -34,6 +46,11 @@ function mapStateToProps(state, ownProps) {
 		man: state.filter.man,
 		woman: state.filter.woman,
 		slider: {start: state.filter.minage, end: state.filter.maxage},
+		hetero: state.filter.hetero,
+		homo: state.filter.homo,
+		bi: state.filter.bi,
+		online: state.filter.online,
+
 		limit: state.filter.limit
 	};
 }

@@ -77,18 +77,35 @@ var user = {
 				'falsefalse': ''
 			}[data.man + data.woman];
 
+			let orientation = [];
+			if(data.hetero) orientation.push(1);
+			if(data.homo) orientation.push(2);
+			if(data.bi) {
+				orientation.push(3);
+				orientation.push(4)
+			}
+			if(!orientation.length) {
+				orientation = [1,2,3,4]
+			}
+			orientation.push(0);
+			let date = '1970-01-01 01:00:00';
+			if(data.online) {
+				date = new Date(Date.now() - 300000);
+			}
+
 			const min = new Date(Date.now() - (data.maxage * 1 + 1) * 31556926000);
 			const max = new Date(Date.now() - (data.minage * 1 - 1) * 31556926000);
 
 			const sql = `SELECT u.id,u.name,u.email,u.birthdate,i.name AS image,i.extension 
 			FROM user u 
 			JOIN image i ON i.user_id=u.id AND i.avatar=1 
-			WHERE ${sex} u.active > 0 AND birthdate BETWEEN ? AND ? AND u.id != ?
+			WHERE ${sex} u.active > 0 AND birthdate BETWEEN ? AND ? AND u.id != ? AND orientation IN (?) AND last_activity > ?
 			ORDER BY u.id DESC
 			LIMIT ?,?
 			`;
 
-			db(sql, [min, max, userId, data.limit ? data.limit*1 : 0, 21], done);
+			console.log([min, max, userId, orientation, date, data.limit ? data.limit*1 : 0, 21]);
+			db(sql, [min, max, userId, orientation, date, data.limit ? data.limit*1 : 0, 21], done);
 		}
 	},
 
@@ -176,6 +193,9 @@ var user = {
 		});
 	},
 
+	setLastActivity(id) {
+		db("UPDATE user SET last_activity=NOW() WHERE user_id=?", [id], () => {});
+	}
 };
 
 module.exports = user;
