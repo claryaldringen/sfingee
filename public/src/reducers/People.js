@@ -1,6 +1,6 @@
 
 import { GET_PEOPLE_SUCCESS, GET_PROFILE_SUCCESS } from '../actions/people'
-import { DELETE_IMAGE, SET_AS_AVATAR } from "../actions/user";
+import { DELETE_IMAGE, SET_AS_AVATAR, SET_IMAGES } from "../actions/user";
 
 const INITIAL_STATE = [];
 
@@ -38,6 +38,14 @@ export default function(state = INITIAL_STATE, action) {
 					avatar.avatar = 1;
 					item.images.unshift(avatar);
 					item.avatar = avatar.name + '.' + avatar.extension;
+				}
+				return item;
+			});
+
+		case SET_IMAGES:
+			return state.map( (item, index) => {
+				if(item.id == action.userId) {
+					item.images = action.images;
 				}
 				return item;
 			});

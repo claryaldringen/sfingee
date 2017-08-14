@@ -58,17 +58,17 @@ export default class Viewer extends React.Component {
 			zIndex: 10
 		};
 		const imageStyle = {position: 'relative', maxWidth: this.state.width, maxHeight: this.state.height,top: '50%', transform: 'translateY(-50%)'};
-		const crossStyle = {position: 'absolute',top: 8,right: 8, background: 'rgba(0,0,0,0.7)', padding: 8, borderRadius: 32, cursor: 'pointer'};
+		const crossStyle = {position: 'absolute',top: 32,right: 32, background: 'rgba(0,0,0,0.7)', padding: 8, borderRadius: 32, cursor: 'pointer'};
 
 		let left = null;
 		if(this.props.index > 0) {
-			const leftStyle = {position: 'absolute',top: '45%',left: 8, background: 'rgba(0,0,0,0.7)', padding: 8, borderRadius: 32, cursor: 'pointer'};
+			const leftStyle = {position: 'absolute',top: '45%',left: 32, background: 'rgba(0,0,0,0.7)', padding: 8, borderRadius: 32, cursor: 'pointer'};
 			left = <div style={leftStyle} onClick={this.leftClick.bind(this)}><img src="/img/left.png" width={32} height={32} /></div>
 		}
 
 		let right = null;
 		if(this.props.index < this.props.images.length-1) {
-			const rightStyle = {position: 'absolute',top: '45%',right: 8, background: 'rgba(0,0,0,0.7)', padding: 8, borderRadius: 32, cursor: 'pointer'};
+			const rightStyle = {position: 'absolute',top: '45%',right: 32, background: 'rgba(0,0,0,0.7)', padding: 8, borderRadius: 32, cursor: 'pointer'};
 			right = <div style={rightStyle} onClick={this.rightClick.bind(this)}><img src="/img/right.png" width={32} height={32} /></div>
 
 		}

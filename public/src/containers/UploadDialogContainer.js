@@ -14,8 +14,9 @@ const mapDispatchToProps = (dispatch) => {
 
 
 function mapStateToProps(state, ownProps) {
+
 	return {
-		visibility: state.dialogs.uploadDialog
+		visibility: state.dialogs.uploadDialog,
 	};
 }
 

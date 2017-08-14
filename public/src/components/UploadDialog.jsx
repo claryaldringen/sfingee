@@ -1,7 +1,7 @@
 
 import React from 'react'
 
-import UploadForm from '../components/UploadForm'
+import UploadForm from '../containers/UploadFormContainer'
 
 export default class UploadDialog extends React.Component {
 
@@ -17,7 +17,7 @@ export default class UploadDialog extends React.Component {
 							<button type="button" className="close" onClick={this.props.hideUploadDialog}>
 								<span aria-hidden="true">&times;</span>
 							</button>
-							<h4 className="modal-title">Nahrávání obrázků</h4>
+							<h4 className="modal-title">Nahrávání obrázků {this.props.progress}</h4>
 						</div>
 						<div className="modal-body">
 							<UploadForm/>

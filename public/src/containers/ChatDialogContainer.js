@@ -81,8 +81,6 @@ function mapStateToProps(state, ownProps) {
 
 	}
 
-	console.log(users);
-
 	return {
 		users: users,
 		visibility: state.dialogs.chatDialog,

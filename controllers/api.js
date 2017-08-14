@@ -211,15 +211,31 @@ let uploadedFiles = [];
 
 router.route('/images').post(upload.single('photos'), (req, res) => {
 
+	if(!checkHash(req.body.authhash, res)) return;
+
 	uploadedFiles.push(req.file.filename);
 
 	if(req.body.index == req.body.count-1) {
 		Image.insert({files: uploadedFiles, userId: cache.hashes[req.body.authhash].id}, (err, data) => {
 
-		});
-	}
+			uploadedFiles = [];
+			if(err) {
+				console.log(err);
+				return;
+			}
 
-	res.json({progess: req.body.index});
+			Image.getByUser(cache.hashes[req.body.authhash].id, (err, data) => {
+				if(err) {
+					console.log(err);
+					return;
+				}
+				res.json({images: data});
+			});
+
+		});
+	} else {
+		res.json({progess: req.body.index});
+	}
 });
 
 router.delete('/image/:authhash/:imageId/:isAvatar', (req, res) => {

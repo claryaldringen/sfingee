@@ -8,24 +8,28 @@ export default class ImageStrip extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.hidden = 0;
+		this.state = {hidden: 0};
 	}
 
 	rightClick() {
-		this.refs['image_' + this.hidden].style.display = 'none';
-		if(this.hidden+6 < this.props.images.length) {
-			this.hidden++;
-			if (this.hidden % 6) {
+		this.refs['image_' + this.state.hidden].style.display = 'none';
+		if(this.state.hidden+6 < this.props.images.length) {
+			let hidden = this.state.hidden;
+			hidden++;
+			this.setState({hidden: hidden});
+			if (hidden % 6) {
 				setTimeout(this.rightClick.bind(this), 50);
 			}
 		}
 	}
 
 	leftClick() {
-		if(this.hidden > 0) {
-			this.hidden--;
-			this.refs['image_' + this.hidden].style.display = 'block';
-			if (this.hidden % 6) {
+		if(this.state.hidden > 0) {
+			this.refs['image_' + this.state.hidden].style.display = 'block';
+			let hidden = this.state.hidden;
+			hidden--;
+			this.setState({hidden: hidden});
+			if (hidden % 6) {
 				setTimeout(this.leftClick.bind(this), 50);
 			}
 		}
@@ -92,22 +96,29 @@ export default class ImageStrip extends React.Component {
 			const leftStyle = {position: 'absolute',top: 48,left: 8, background: 'rgba(0,0,0,0.7)', padding: 8, borderRadius: 32, cursor: 'pointer', zIndex: 2};
 			const rightStyle = {position: 'absolute',top: 48,right: 8, background: 'rgba(0,0,0,0.7)', padding: 8, borderRadius: 32, cursor: 'pointer', zIndex: 2};
 
-			controls.push(
-				<div key="c1" style={leftStyle} onClick={this.leftClick.bind(this)}>
-					<img src="/img/left.png" width={32} height={32} />
-				</div>
-			);
-			controls.push(
-				<div key="c2" style={rightStyle} onClick={this.rightClick.bind(this)}>
-					<img src="/img/right.png" width={32} height={32} />
-				</div>
-			);
+			if(this.state.hidden > 0) {
+				controls.push(
+					<div key="c1" style={leftStyle} onClick={this.leftClick.bind(this)}>
+						<img src="/img/left.png" width={32} height={32}/>
+					</div>
+				);
+			}
+
+			if(this.state.hidden+6 < this.props.images.length) {
+				controls.push(
+					<div key="c2" style={rightStyle} onClick={this.rightClick.bind(this)}>
+						<img src="/img/right.png" width={32} height={32}/>
+					</div>
+				);
+			}
 		}
 
 		if(this.props.write) {
 			htmlImages.unshift(
-				<div key={'image_write'} style={{background: 'blue', width: 142, height: 142, float: 'left', overflow: 'hidden'}} onClick={this.props.openUploadDialog} >
-
+				<div key={'image_write'} style={{background: '#666', width: 142, height: 142, float: 'left', overflow: 'hidden', textAlign: 'center', cursor: 'pointer', padding: 32, color: '#FFF'}} onClick={this.props.openUploadDialog} >
+					<img src="/img/image-add-button.png" width={32} height={32} />
+					<br/>
+					<b>Přidat fotografie</b>
 				</div>
 			)
 		}
@@ -119,7 +130,7 @@ export default class ImageStrip extends React.Component {
 					{htmlImages}
 				</div>
 				<div style={{position: 'absolute', left: 8, bottom: 8, color: '#FFFFFF', background: 'rgba(0,0,0,0.7)', padding: '4px 8px', borderRadius: 8}}>
-					{this.hidden}/{this.props.cnt}
+					{this.state.hidden}/{this.props.cnt}
 				</div>
 				<UploadDialog/>
 				<Viewer images={this.props.images} email={this.props.email}/>

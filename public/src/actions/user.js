@@ -25,6 +25,10 @@ export const UPDATE_USER_DONE = 'UPDATE_USER_DONE';
 export const UPLOAD_IMAGES = 'UPLOAD_IMAGES';
 export const DELETE_IMAGE = 'DELETE_IMAGE';
 export const SET_AS_AVATAR = 'SET_AS_AVATAR';
+export const SET_IMAGES = 'SET_IMAGES';
+
+export const SET_PROGRESS = 'SET_PROGRESS';
+export const RESET_PROGRESS = 'RESET_PROGRESS';
 
 export function signUpUser(formValues) {
 
@@ -109,7 +113,7 @@ export function setUser(user) {
 	return {type: SET_USER, user: user};
 }
 
-export function uploadImages(formValues) {
+export function uploadImages(formValues, dispatch) {
 
 	const uploaders = formValues.image.map( (image,i) => {
 		const data = new FormData();
@@ -117,7 +121,10 @@ export function uploadImages(formValues) {
 		data.append('index', i);
 		data.append('count', formValues.image.length);
 		data.append('photos', image);
-		return axios.post('/api/images', data, {headers: { "X-Requested-With": "XMLHttpRequest" }});
+		return axios.post('/api/images', data, {headers: { "X-Requested-With": "XMLHttpRequest" }, onUploadProgress: (event) => {
+			const x = i;
+			dispatch(setProgress(event.loaded, event.total, x));
+		}});
 	});
 
 
@@ -150,4 +157,16 @@ export function updateUser(formValues) {
 
 export function updateUserDone() {
 	return {type: UPDATE_USER_DONE}
+}
+
+export function setProgress(progress, total, index) {
+	return {type: SET_PROGRESS, progress: progress, total: total, index: index}
+}
+
+export function resetProgress() {
+	return {type: RESET_PROGRESS}
+}
+
+export function setImages(userId, images) {
+	return {type: SET_IMAGES, userId: userId, images: images}
 }
