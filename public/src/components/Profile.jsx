@@ -61,7 +61,11 @@ class Profile extends React.Component {
 		}
 
 		if(!this.props.name) {
-			return <div>Loading...</div>
+			return(
+				<div style={{textAlign: 'center', padding: this.state.height/3}}>
+					<img src="/img/spinner.gif" />
+				</div>
+			);
 		}
 
 		let relationship = null;

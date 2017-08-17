@@ -197,16 +197,34 @@ router.get('/chats/:authhash', (req, res) => {
 router.get('/profile/:id', (req, res) => {
 
 	User.getUser(req.params.id, (err, data) => {
+
+		if(err) {
+			res.json({error: err});
+			console.log(err);
+			return;
+		}
+
+		if(data == null) {
+			res.json({error: {code: 'NOT_FOUND'}});
+			return;
+		}
+
 		Image.getByUser(data.id, (err, imageData) => {
-				data.images = imageData;
-				for(let hash in cache.hashes) {
-					if(cache.hashes[hash].id == data.id) {
-						data.lastActivity = cache.hashes[hash].lastActivity;
-						break;
-					}
+			if(err) {
+				res.json({error: err});
+				console.log(err);
+				return;
+			}
+
+			data.images = imageData;
+			for(let hash in cache.hashes) {
+				if(cache.hashes[hash].id == data.id) {
+					data.lastActivity = cache.hashes[hash].lastActivity;
+					break;
 				}
-				res.json(data);
-			});
+			}
+			res.json(data);
+		});
 	});
 });
 

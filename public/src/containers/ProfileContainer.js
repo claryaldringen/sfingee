@@ -1,7 +1,8 @@
 
 import Profile from '../components/Profile';
 import { connect } from 'react-redux';
-import axios from 'axios'
+import { get } from 'axios';
+import { push } from 'react-router-redux';
 
 import { getAge } from '../tools/utils';
 import { getProfileSuccess } from '../actions/people';
@@ -11,7 +12,7 @@ import { getRelationship, getOrientation, getEyes, getHair, getHairLong, getExpe
 const mapDispatchToProps = (dispatch) => {
     return {
 	    load(id) {
-		    axios.get('/api/profile/' + id).then((result) => {
+		    get('/api/profile/' + id).then((result) => {
 			    if (result.status !== 200) {
 
 			    }
@@ -19,6 +20,10 @@ const mapDispatchToProps = (dispatch) => {
 			    if(result.data.error) {
 				    if (result.data.error.code == 'NOT_AUTHORIZED') {
 					    window.location.href = '/'
+				    }
+
+				    if(result.data.error.code == 'NOT_FOUND') {
+				    	dispatch(push('/app/people'));
 				    }
 			    }
 
