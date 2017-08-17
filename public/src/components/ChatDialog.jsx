@@ -1,8 +1,8 @@
 
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { findDOMNode } from 'react-dom'
 import io from 'socket.io-client'
-import ReactEmoji from 'react-emoji'
+import { emojify } from 'react-emoji'
 
 import Users from '../containers/ChatUsersContainer'
 
@@ -88,11 +88,15 @@ export default class ChatDialog extends React.Component {
 	}
 
 	scrollToBottom() {
-		const elem = ReactDOM.findDOMNode(this.refs.main);
+		const elem = findDOMNode(this.refs.main);
 
 		if (elem) {
 			elem.scrollTop = elem.scrollHeight;
 		}
+	}
+
+	showProfile() {
+		this.props.showProfile(this.props.titleId);
 	}
 
 	componentDidMount() {
@@ -130,7 +134,7 @@ export default class ChatDialog extends React.Component {
 				<div className="row" key={'message_' + index}>
 					<div className={'col-sm-6 ' + align} >
 						<div style={{backgroundColor: bcgColor, color: color, borderRadius: 8, padding: 8, margin: 8}}>
-						{ReactEmoji.emojify(message[2])}
+						{emojify(message[2])}
 						</div>
 					</div>
 				</div>
@@ -152,7 +156,7 @@ export default class ChatDialog extends React.Component {
 							<button type="button" className="close" onClick={this.props.hideChatDialog}>
 								<span aria-hidden="true">&times;</span>
 							</button>
-							<h4 className="modal-title">{this.props.title}</h4>
+							<h4 className="modal-title" onClick={this.showProfile.bind(this)}><a style={{cursor: 'pointer'}}>{this.props.title}</a></h4>
 						</div>
 						<div className="modal-body">
 							<div className="row">

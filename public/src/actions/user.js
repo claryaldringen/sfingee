@@ -1,5 +1,5 @@
 
-import axios from 'axios'
+import { get, put, post, delete as del, all } from 'axios'
 import { getAuthHash } from '../tools/auth'
 
 export const SIGNUP_USER = 'SIGNUP_USER';
@@ -27,8 +27,17 @@ export const DELETE_IMAGE = 'DELETE_IMAGE';
 export const SET_AS_AVATAR = 'SET_AS_AVATAR';
 export const SET_IMAGES = 'SET_IMAGES';
 
+export const SET_LOCK = 'SET_LOCK';
+export const SET_LOCK_DONE = 'SET_LOCK_DONE';
+
+export const UNLOCK = 'UNLOCK';
+export const UNLOCK_FAILED = 'UNLOCK_FAILED';
+export const UNLOCK_SUCCESS = 'UNLOCK_SUCCESS';
+
 export const SET_PROGRESS = 'SET_PROGRESS';
 export const RESET_PROGRESS = 'RESET_PROGRESS';
+
+export const SET_CREDIT = 'SET_CREDIT';
 
 export function signUpUser(formValues) {
 
@@ -42,7 +51,7 @@ export function signUpUser(formValues) {
 	data.append('year', formValues.year);
 	data.append('sex', formValues.sex);
 
-	const request = axios.post('/api/user', data);
+	const request = post('/api/user', data);
 
 	return {
 		type: SIGNUP_USER,
@@ -59,7 +68,7 @@ export function signUpUserFailure() {
 }
 
 export function signInUser(formValues) {
-	const request = axios.get('api/authhash/' + formValues.siemail.toLowerCase() + '/' + formValues.sipassword);
+	const request = get('api/authhash/' + formValues.siemail.toLowerCase() + '/' + formValues.sipassword);
 	return {
 		type: SIGNIN_USER,
 		payload: request
@@ -76,7 +85,7 @@ export function signInUserFailure() {
 
 export function sendEmail(formValues) {
 
-	const request = axios.post('/api/forgottenPasswordEmail', {email: formValues.rpemail});
+	const request = post('/api/forgottenPasswordEmail', {email: formValues.rpemail});
 
 	return {
 		type: SEND_FP_EMAIL,
@@ -90,7 +99,7 @@ export function sendFailure() {
 
 export function setNewPassword(formValues) {
 
-	const request = axios.put('/api/user', {hash: formValues.hash, password: formValues.password1});
+	const request = put('/api/user', {hash: formValues.hash, password: formValues.password1});
 
 	return {
 		type: SEND_FP_EMAIL,
@@ -101,7 +110,7 @@ export function setNewPassword(formValues) {
 
 export function getUser() {
 
-	const request = axios.get('/api/user/' + getAuthHash());
+	const request = get('/api/user/' + getAuthHash());
 
 	return {
 		type: GET_USER,
@@ -121,7 +130,7 @@ export function uploadImages(formValues, dispatch) {
 		data.append('index', i);
 		data.append('count', formValues.image.length);
 		data.append('photos', image);
-		return axios.post('/api/images', data, {headers: { "X-Requested-With": "XMLHttpRequest" }, onUploadProgress: (event) => {
+		return post('/api/images', data, {headers: { "X-Requested-With": "XMLHttpRequest" }, onUploadProgress: (event) => {
 			const x = i;
 			dispatch(setProgress(event.loaded, event.total, x));
 		}});
@@ -130,20 +139,20 @@ export function uploadImages(formValues, dispatch) {
 
 	return {
 		type: UPLOAD_IMAGES,
-		payload: axios.all(uploaders)
+		payload: all(uploaders)
 	};
 }
 
 export function deleteImage(index, userId, imageId, isAvatar) {
 
-	axios.delete('/api/image/' + getAuthHash() + '/' + imageId + '/' + isAvatar);
+	del('/api/image/' + getAuthHash() + '/' + imageId + '/' + isAvatar);
 
 	return({type: DELETE_IMAGE, index: index, userId: userId})
 }
 
 export function setAsAvatar(index, userId, image, imageId) {
 
-	axios.put('/api/image/avatar/' + getAuthHash() + '/' + imageId);
+	put('/api/image/avatar/' + getAuthHash() + '/' + imageId);
 
 	return {type: SET_AS_AVATAR, index: index, userId: userId, imageId: imageId, image: image}
 }
@@ -152,7 +161,7 @@ export function updateUser(formValues) {
 
 	formValues.authhash = getAuthHash();
 
-	return {type: UPDATE_USER, payload: axios.put('/api/user', formValues)}
+	return {type: UPDATE_USER, payload: put('/api/user', formValues)}
 }
 
 export function updateUserDone() {
@@ -169,4 +178,31 @@ export function resetProgress() {
 
 export function setImages(userId, images) {
 	return {type: SET_IMAGES, userId: userId, images: images}
+}
+
+export function setLock(imageId, credits) {
+	return {type: SET_LOCK, payload: put('/api/image/', {authhash: getAuthHash(), action: 'lock', id: imageId, credits: credits})}
+}
+
+export function setLockDone(userId, index, credits) {
+	return {type: SET_LOCK_DONE, userId: userId, index: index, credits: credits}
+}
+
+export function unlock(imageId) {
+
+	const payload = put('/api/image/', {authhash: getAuthHash(),  action: 'unlock', id: imageId});
+
+	return {type: UNLOCK, payload: payload}
+}
+
+export function unlockFailed(reason) {
+	return {type: UNLOCK_FAILED, reason: reason}
+}
+
+export function unlockSuccess(imageId) {
+	return {type: UNLOCK_SUCCESS, imageId: imageId}
+}
+
+export function setCredit(credit) {
+	return {type: SET_CREDIT, credit: credit};
 }

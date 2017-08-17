@@ -5,6 +5,7 @@ import Filter from '../containers/FilterContainer'
 import ChatDialog from '../containers/ChatDialogContainer'
 import Messages from '../containers/MessagesContainer'
 import Avatar from '../containers/AvatarContainer'
+import PayDialog from '../containers/PayDialogContainer'
 
 export default class App extends React.Component {
 
@@ -22,6 +23,7 @@ export default class App extends React.Component {
 					</div>
 				</div>
 				<ChatDialog />
+				<PayDialog />
 			</div>
 		);
 	}

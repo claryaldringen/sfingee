@@ -66,25 +66,25 @@ export default class Filter extends React.Component {
 					</div>
 					<div className="col-md-12">
 						<label style={{fontSize: 18, fontWeight: 'normal'}}>
-							<input type="checkbox" style={{width: 18, height: 18}} checked={this.props.hetero} onChange={this.props.heteroChange} />
+							<input type="checkbox" style={{width: 18, height: 18}} checked={this.props.hetero} onChange={this.props.toggleHetero} />
 							&nbsp;
 							Heterosexuální
 						</label>
 						<br/>
 						<label style={{fontSize: 18, fontWeight: 'normal'}}>
-							<input type="checkbox" style={{width: 18, height: 18}} checked={this.props.homo} onChange={this.props.homoChange} />
+							<input type="checkbox" style={{width: 18, height: 18}} checked={this.props.homo} onChange={this.props.toggleHomo} />
 							&nbsp;
 							Homosexuální
 						</label>
 						<br/>
 						<label style={{fontSize: 18, fontWeight: 'normal'}}>
-							<input type="checkbox" style={{width: 18, height: 18}} checked={this.props.bi} onChange={this.props.biChange} />
+							<input type="checkbox" style={{width: 18, height: 18}} checked={this.props.bi} onChange={this.props.toggleBi} />
 							&nbsp;
 							Bisexuální
 						</label>
 						<br/>
 						<label style={{fontSize: 18, fontWeight: 'normal'}}>
-							<input type="checkbox" style={{width: 18, height: 18}} checked={this.props.online} onChange={this.props.onlineChange} />
+							<input type="checkbox" style={{width: 18, height: 18}} checked={this.props.online} onChange={this.props.toggleOnline} />
 							&nbsp;
 							Online
 						</label>

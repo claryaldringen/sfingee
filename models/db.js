@@ -22,10 +22,8 @@ var query = function(sql, params, done) {
 				return;
 			}
 			done(false, results);
-		})
+		});
 	});
-
 };
-
 
 module.exports = query;

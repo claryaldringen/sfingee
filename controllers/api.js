@@ -103,7 +103,10 @@ router.get('/user/:authhash', (req, res) => {
 	if(!checkHash(req.params.authhash, res)) return;
 
 	User.getUser(cache.hashes[req.params.authhash].id, (err, data) => {
-		res.json(data);
+		Image.getUnlocked(data.id, (err, unlockedData) => {
+			data.unlocked = unlockedData.map((row) => { return row['image_id'] });
+			res.json(data);
+		});
 	})
 });
 
@@ -195,16 +198,16 @@ router.get('/profile/:id', (req, res) => {
 
 	User.getUser(req.params.id, (err, data) => {
 		Image.getByUser(data.id, (err, imageData) => {
-			data.images = imageData;
-			for(let hash in cache.hashes) {
-				if(cache.hashes[hash].id == data.id) {
-					data.lastActivity = cache.hashes[hash].lastActivity;
-					break;
+				data.images = imageData;
+				for(let hash in cache.hashes) {
+					if(cache.hashes[hash].id == data.id) {
+						data.lastActivity = cache.hashes[hash].lastActivity;
+						break;
+					}
 				}
-			}
-			res.json(data);
-		})
-	})
+				res.json(data);
+			});
+	});
 });
 
 let uploadedFiles = [];
@@ -249,6 +252,33 @@ router.delete('/image/:authhash/:imageId/:isAvatar', (req, res) => {
 		}
 		res.json({status: 'ok'});
 	});
+});
+
+router.put('/image', (req, res) => {
+	if(!checkHash(req.body.authhash, res)) return;
+
+	if(req.body.action == 'lock') {
+		Image.setLock({id: req.body.id, brutto: req.body.credits}, (err, data) => {
+			if (err) {
+				console.log(err);
+				return;
+			}
+
+			res.json({userId: cache.hashes[req.body.authhash].id});
+		});
+	}
+
+	if(req.body.action == 'unlock') {
+		Image.unlock({id: req.body.id, userId: cache.hashes[req.body.authhash].id}, (err, data) => {
+			if (err) {
+				res.json({error: err});
+				console.log(err);
+				return;
+			}
+
+			res.json({credits: data[0].credits});
+		});
+	}
 });
 
 router.put('/image/avatar/:authhash/:id', (req, res) => {

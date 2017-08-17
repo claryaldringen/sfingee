@@ -32,6 +32,13 @@ export default class Viewer extends React.Component {
 		});
 	}
 
+	unlock(event) {
+		event.stopPropagation();
+		event.preventDefault();
+		const image = this.props.images[this.props.index];
+		this.props.unlock(image.id);
+	}
+
 	componentDidMount() {
 		window.addEventListener("resize", this.updateDimensions.bind(this));
 	}
@@ -57,7 +64,7 @@ export default class Viewer extends React.Component {
 			display: 'inline-block',
 			zIndex: 10
 		};
-		const imageStyle = {position: 'relative', maxWidth: this.state.width, maxHeight: this.state.height,top: '50%', transform: 'translateY(-50%)'};
+
 		const crossStyle = {position: 'absolute',top: 32,right: 32, background: 'rgba(0,0,0,0.7)', padding: 8, borderRadius: 32, cursor: 'pointer'};
 
 		let left = null;
@@ -73,6 +80,18 @@ export default class Viewer extends React.Component {
 
 		}
 
+		let img = null;
+		if(!image.netto || this.props.unlocked.indexOf(image.id) !== -1 || this.props.write ) {
+			const imageStyle = {position: 'relative', maxWidth: this.state.width, maxHeight: this.state.height,top: '50%', transform: 'translateY(-50%)'};
+			img = <img src={'/uploads/' + this.props.email + '/' + image.name + '.' + image.extension} style={imageStyle}/>
+		} else {
+			img =
+				<div style={{position: 'fixed', width: 480, left: (this.state.width/2) - 240, top: (this.state.height/2)-160}}>
+					<h3 style={{color: '#FFF'}}>Tato fotografie je zamčená. Za <b>{image.netto} kreditů</b> ji můžete odemknout.</h3>
+					<button className="btn btn-success btn-lg" onClick={this.unlock.bind(this)}>Odemknout za {image.netto} kreditů</button>
+				</div>
+		}
+
 		return(
 			<div style={mainStyle}>
 				{left}
@@ -82,7 +101,7 @@ export default class Viewer extends React.Component {
 					<img src="/img/cross.png" width={32} height={32} />
 				</div>
 
-				<img src={'/uploads/' + this.props.email + '/' + image.name + '.' + image.extension} style={imageStyle}/>
+				{img}
 			</div>
 		)
 	}

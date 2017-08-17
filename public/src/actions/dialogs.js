@@ -10,6 +10,10 @@ export const OPEN_UPLOAD_DIALOG = 'OPEN_UPLOAD_DIALOG';
 export const HIDE_UPLOAD_DIALOG = 'HIDE_UPLOAD_DIALOG';
 export const SHOW_VIEWER = 'SHOW_VIEWER';
 export const HIDE_VIEWER = 'HIDE_VIEWER';
+export const OPEN_LOCK_DIALOG = 'OPEN_LOCK_DIALOG';
+export const HIDE_LOCK_DIALOG = 'HIDE_LOCK_DIALOG';
+export const SHOW_PAY_DIALOG = 'SHOW_PAY_DIALOG';
+export const HIDE_PAY_DIALOG = 'HIDE_PAY_DIALOG';
 
 export function showSignUpDialog() {
 	return {type: SHOW_SIGNUP_DIALOG};
@@ -54,3 +58,20 @@ export function showViewer(index) {
 export function hideViewer() {
 	return {type: HIDE_VIEWER};
 }
+
+export function openLockDialog(index) {
+	return {type: OPEN_LOCK_DIALOG, index: index};
+}
+
+export function hideLockDialog() {
+	return {type: HIDE_LOCK_DIALOG};
+}
+
+export function showPayDialog() {
+	return {type: SHOW_PAY_DIALOG};
+}
+
+export function hidePayDialog() {
+	return {type: HIDE_PAY_DIALOG};
+}
+

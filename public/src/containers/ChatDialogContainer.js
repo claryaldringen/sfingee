@@ -1,5 +1,6 @@
 import ChatDialog from '../components/ChatDialog';
 import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
 
 import { hideChatDialog,openChatDialog } from '../actions/dialogs'
 import { getUser, setUser } from '../actions/user'
@@ -41,6 +42,9 @@ const mapDispatchToProps = (dispatch) => {
 		},
 		openChat(id) {
 			dispatch(openChatDialog(id));
+		},
+		showProfile(id) {
+			if(id) dispatch(push('/app/profile/' + id));
 		}
 	}
 }
@@ -51,7 +55,16 @@ function mapStateToProps(state, ownProps) {
 	let users = [];
 	for(let key of state.chat.keys()) {
 		const user = state.chatUser[key];
-		if(user) users.push(user);
+		if(user) {
+			users.push(user);
+		} else {
+			for(let i = 0; i < state.people.length; i++) {
+				if(state.people[i].id == key) {
+					users.push(state.people[i]);
+					break;
+				}
+			}
+		}
 	}
 
 	let userId = null;
@@ -88,6 +101,7 @@ function mapStateToProps(state, ownProps) {
 		userId: userId,
 		user: state.user.user,
 		title: users[0] ? users[0].name : 'Vaše chaty',
+		titleId: users[0] ? users[0].id : 0,
 		chats: state.chat
 	};
 }

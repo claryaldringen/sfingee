@@ -3,6 +3,8 @@ import React from 'react';
 
 import UploadDialog from '../containers/UploadDialogContainer';
 import Viewer from '../containers/ViewerContainer';
+import LockDialog from "../containers/LockDialogContainer";
+
 
 export default class ImageStrip extends React.Component {
 
@@ -48,6 +50,11 @@ export default class ImageStrip extends React.Component {
 		this.props.setAsAvatar(index, this.props.userId, image.name + '.' + image.extension, image.id);
 	}
 
+	setLock(index, event) {
+		event.stopPropagation();
+		this.props.lock(index);
+	}
+
 	openImage(index) {
 		this.props.showViewer(index);
 	}
@@ -59,16 +66,41 @@ export default class ImageStrip extends React.Component {
 			const style = {position: 'relative', background: '#666', width: 142, height: 142, float: 'left', overflow: 'hidden', cursor: 'pointer'};
 
 			const controls = [];
+			let key = null;
 			if(this.props.write) {
-				controls.push(
-					<div key="cont1" title="Odstranit fotku" onClick={this.delete.bind(this, i)} style={{position: 'absolute',top: 8,right: 8, background: 'rgba(0,0,0,0.7)',padding: '5px 10px', borderRadius: 14, cursor: 'pointer'}}>
-						<img src="/img/cross.png" width={8} height={8} />
-					</div>
-				);
+
+				if(this.props.images.length > 1) {
+					controls.push(
+						<div key="cont1" title="Odstranit fotku" onClick={this.delete.bind(this, i)} style={{
+							position: 'absolute',
+							top: 8,
+							right: 8,
+							background: 'rgba(0,0,0,0.7)',
+							padding: '5px 10px',
+							borderRadius: 14,
+							cursor: 'pointer'
+						}}>
+							<img src="/img/cross.png" width={8} height={8}/>
+						</div>
+					);
+				}
 
 				if(image.id != this.props.avatar) {
 					controls.push(
-						<div key="cont2" title="Nastavit jako profilovku" style={{
+						<div key="cont2" title="Zamknout fotografii" style={{
+							position: 'absolute',
+							top: 8,
+							left: 56,
+							background: 'rgba(0,0,0,0.7)',
+							padding: '5px 10px',
+							borderRadius: 14,
+							cursor: 'pointer'
+						}} onClick={this.setLock.bind(this, i)}>
+							<img src="/img/key.png" width={8} height={8}/>
+						</div>
+					);
+					controls.push(
+						<div key="cont3" title="Nastavit jako profilovku" style={{
 							position: 'absolute',
 							top: 8,
 							left: 8,
@@ -81,12 +113,37 @@ export default class ImageStrip extends React.Component {
 						</div>
 					);
 				}
+				if(image.brutto) {
+					key =
+						<div style={{width: 32, height: 32, textAlign: 'center', color: '#FFF', position: 'absolute', top: 55, left: 55}}>
+							<img src="/img/key.png" style={{position: 'absolute', width: 32, height: 32, left: 0, top: 0}} />
+							<b style={{zIndex: 2}}>{image.brutto} kr.</b>
+						</div>
+				}
+			}
+
+			if(image.netto && key == null && this.props.unlocked.indexOf(image.id) === -1) {
+				key =
+					<div style={{width: 48, height: 48, textAlign: 'center', color: '#FFF', position: 'absolute', top: 46, left: 47}}>
+						<img src="/img/key.png" style={{position: 'absolute', width: 32, height: 32, left: 0, top: 0}} />
+						<br /><br />
+						<b style={{zIndex: 2}}>{image.netto} kr.</b>
+					</div>
+			}
+
+			let img = null;
+
+			if(!image.netto || this.props.unlocked.indexOf(image.id) !== -1 || this.props.write) {
+				img = <img src={'/uploads/' + this.props.email + '/' + image.name + '.' + image.extension} style={{maxWidth: 142, minHeight: 142}}/>
+			} else {
+				img = <div style={{width: 142, height: 142, borderRight: '1px solid #e5e5e5'}}></div>
 			}
 
 			return(
 				<div ref={'image_' + i} key={'image_' + i} style={style} onClick={this.openImage.bind(this, i)}>
 					{controls}
-					<img src={'/uploads/' + this.props.email + '/' + image.name + '.' + image.extension} style={{maxWidth: 142, minHeight: 142}}/>
+					{key}
+					{img}
 				</div>
 			);
 		});
@@ -133,7 +190,8 @@ export default class ImageStrip extends React.Component {
 					{this.state.hidden}/{this.props.cnt}
 				</div>
 				<UploadDialog/>
-				<Viewer images={this.props.images} email={this.props.email}/>
+				<Viewer images={this.props.images} email={this.props.email} write={this.props.write} />
+				<LockDialog images={this.props.images} email={this.props.email}/>
 			</div>
 		);
 	}

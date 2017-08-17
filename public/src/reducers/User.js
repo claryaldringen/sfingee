@@ -1,5 +1,5 @@
 
-import { SIGNUP_USER, SIGNUP_USER_SUCCESS, SIGNUP_USER_FAILURE, SET_USER,SET_AS_AVATAR, UPDATE_USER, UPDATE_USER_DONE } from '../actions/user'
+import { SIGNUP_USER, SIGNUP_USER_SUCCESS, SIGNUP_USER_FAILURE, SET_USER,SET_AS_AVATAR, UPDATE_USER, UPDATE_USER_DONE, UNLOCK_SUCCESS, SET_CREDIT } from '../actions/user'
 
 const INITIAL_STATE = {error:null, email: null, registered: false, loading: false, user: {}};
 
@@ -22,6 +22,12 @@ export default function(state = INITIAL_STATE, action) {
 			return { ...state, loading: true };
 		case UPDATE_USER_DONE:
 			return { ...state, loading: false };
+		case UNLOCK_SUCCESS:
+			let user1 = state.user;
+			user1.unlocked = [ ...user1.unlocked, action.imageId ];
+			return{ ...state, user: user1 };
+		case SET_CREDIT:
+			return { ...state, user: { ...state.user, credits: action.credit } };
 		default:
 			return state;
 	}

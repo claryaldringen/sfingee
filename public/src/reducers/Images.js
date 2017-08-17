@@ -2,10 +2,11 @@
 
 import {
 	SHOW_VIEWER,
+	OPEN_LOCK_DIALOG
 } from '../actions/dialogs'
 import {SET_PROGRESS, RESET_PROGRESS } from "../actions/user";
 
-const INITIAL_STATE = {index: 0, progress: [], total: 0};
+const INITIAL_STATE = {index: 0, progress: [], total: 0, lockIndex: 0};
 
 export default function(state = INITIAL_STATE, action) {
 
@@ -24,6 +25,10 @@ export default function(state = INITIAL_STATE, action) {
 		case RESET_PROGRESS:
 
 			return { ...state, ...{progress: [], total: 0} };
+
+		case OPEN_LOCK_DIALOG:
+
+			return {  ...state, lockIndex: action.index}
 
 		default:
 			return state;

@@ -13,7 +13,7 @@ var user = {
 					done(err);
 					return;
 				}
-				db("INSERT INTO user (name,password,email,birthdate,sex) VALUES (?,?,?,?,?)", [user.name, hash, user.email, user.birthdate, user.sex], (err, results) => {
+				db("INSERT INTO user (name,password,email,birthdate,sex, last_activity) VALUES (?,?,?,?,?,?)", [user.name, hash, user.email, user.birthdate, user.sex, new Date()], (err, results) => {
 					if(err) {
 						done(err);
 						return;
@@ -78,18 +78,18 @@ var user = {
 			}[data.man + data.woman];
 
 			let orientation = [];
-			if(data.hetero) orientation.push(1);
-			if(data.homo) orientation.push(2);
-			if(data.bi) {
+			if(data.hetero && data.hetero == 'true') orientation.push(1);
+			if(data.homo && data.homo == 'true') orientation.push(2);
+			if(data.bi && data.bi == 'true') {
 				orientation.push(3);
-				orientation.push(4)
+				orientation.push(4);
 			}
 			if(!orientation.length) {
 				orientation = [1,2,3,4]
 			}
 			orientation.push(0);
 			let date = '1970-01-01 01:00:00';
-			if(data.online) {
+			if(data.online && data.online == 'true') {
 				date = new Date(Date.now() - 300000);
 			}
 
@@ -162,26 +162,15 @@ var user = {
 	},
 
 	getUser(id, done) {
-		const sql = "SELECT " +
-			"u.id," +
-			"u.name," +
-			"birthdate," +
-			"sex," +
-			"orientation," +
-			"relationship," +
-			"tall," +
-			"weight," +
-			"experience," +
-			"hair," +
-			"eyes," +
-			"show_weight AS showWeight," +
-			"hair_long AS hairLong," +
-			"description," +
-			"email," +
-			"CONCAT(i.name,'.',i.extension) AS avatar " +
-			"FROM user u\n" +
-			"JOIN image i ON i.user_id=u.id AND avatar=1\n" +
-      "WHERE u.id=?";
+		const sql = `SELECT 
+			u.id,u.name,birthdate,sex,orientation,relationship,tall,weight,experience,hair,eyes,
+			show_weight AS showWeight,
+			hair_long AS hairLong,
+			description,email,credits,
+			CONCAT(i.name,'.',i.extension) AS avatar
+			FROM user u
+			JOIN image i ON i.user_id=u.id AND avatar=1
+      WHERE u.id=?`;
 
 		db(sql, [id], (err, data) => {
 			if (err) {
@@ -194,7 +183,7 @@ var user = {
 	},
 
 	setLastActivity(id) {
-		db("UPDATE user SET last_activity=NOW() WHERE user_id=?", [id], () => {});
+		db("UPDATE user SET last_activity=NOW() WHERE id=?", [id], () => {});
 	}
 };
 

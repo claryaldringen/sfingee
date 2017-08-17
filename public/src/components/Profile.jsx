@@ -25,7 +25,9 @@ class Profile extends React.Component {
 		};
 	}
 
-	openChat() {
+	openChat(event) {
+		event.stopPropagation();
+		event.preventDefault();
 		this.props.openChat(this.props.params.userId);
 	}
 

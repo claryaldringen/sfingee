@@ -1,6 +1,6 @@
 
 import { GET_PEOPLE_SUCCESS, GET_PROFILE_SUCCESS } from '../actions/people'
-import { DELETE_IMAGE, SET_AS_AVATAR, SET_IMAGES } from "../actions/user";
+import { DELETE_IMAGE, SET_AS_AVATAR, SET_IMAGES, SET_LOCK_DONE } from "../actions/user";
 
 const INITIAL_STATE = [];
 
@@ -46,6 +46,16 @@ export default function(state = INITIAL_STATE, action) {
 			return state.map( (item, index) => {
 				if(item.id == action.userId) {
 					item.images = action.images;
+				}
+				return item;
+			});
+
+		case SET_LOCK_DONE:
+			return state.map( (item, index) => {
+				if(item.id == action.userId) {
+					item.images = [ ...item.images ];
+					item.images[action.index].brutto = action.credits;
+					item.images = item.images.sort((a, b) => { return a.brutto - b.brutto});
 				}
 				return item;
 			});

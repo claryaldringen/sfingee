@@ -6,7 +6,7 @@ import { getAge } from '../tools/utils';
 export default class Card extends React.Component {
 
 	openChat(event) {
-		event.stopPropagation()
+		event.stopPropagation();
 		this.props.openChat(this.props.data.id);
 	}
 

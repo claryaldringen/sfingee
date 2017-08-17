@@ -54,7 +54,7 @@ class UploadForm extends React.Component{
 			progressBar = <progress value={this.props.progress} max={this.props.total} style={{position: 'absolute', top: 220, left: 160, width: 480, height: 32}}></progress>
 		}
 
-		let style = {width: 800, height: 480, borderWidth: 2, borderColor: 'rgb(102, 102, 102)', borderStyle: 'dashed', borderRadius: 5};
+		let style = {width: 800, height: 480, borderWidth: 2, borderColor: 'rgb(102, 102, 102)', borderStyle: 'dashed', borderRadius: 5, cursor: 'pointer'};
 
 		return(
 			<div className="form-group">

@@ -14,9 +14,11 @@ export default class Avatar extends React.Component {
 					<h4>{this.props.name}</h4>
 				</a>
 				<br />
-				<img src="/img/coins.png" width="24" height="24" />
-				&nbsp;&nbsp;
-				{this.props.credits} kreditů
+				<a style={{cursor: 'pointer'}} onClick={this.props.showPayDialog}>
+					<img src="/img/coins.png" width="24" height="24" />
+					&nbsp;&nbsp;
+					{this.props.credits} kreditů
+				</a>
 			</div>
 		)
 	}

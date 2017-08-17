@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use('/api', apiRouter);
 app.use('/', staticRouter);
-app.use(express.static('public'));
+app.use(express.static('public', {maxage: 86400000}));
 app.use(favicon(path.join(__dirname,'public','img','favicon.ico')));
 
 app.use(function(req, res, next) {

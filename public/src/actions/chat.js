@@ -1,5 +1,5 @@
 
-import axios from 'axios'
+import { get } from 'axios'
 import { getAuthHash } from '../tools/auth'
 
 export const OPEN_CHAT = 'OPEN_CHAT';
@@ -18,7 +18,7 @@ export function addMessage(from, to, message, userId) {
 
 export function loadChats() {
 
-	const request = axios.get('/api/chats/' + getAuthHash());
+	const request = get('/api/chats/' + getAuthHash());
 
 	return {type: LOAD_CHATS, payload: request}
 }

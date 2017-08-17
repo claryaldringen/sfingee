@@ -1,7 +1,7 @@
 import ImageStrip from '../components/ImageStrip';
 import { connect } from 'react-redux';
 
-import { openUploadDialog, hideUploadDialog, showViewer } from '../actions/dialogs';
+import { openUploadDialog, hideUploadDialog, showViewer, openLockDialog } from '../actions/dialogs';
 import { deleteImage, setAsAvatar } from '../actions/user';
 
 const mapDispatchToProps = (dispatch) => {
@@ -20,6 +20,9 @@ const mapDispatchToProps = (dispatch) => {
 		},
 		setAsAvatar(index, userId, image, imageId) {
 			dispatch(setAsAvatar(index, userId, image, imageId));
+		},
+		lock(index) {
+			dispatch(openLockDialog(index))
 		}
 	}
 }
@@ -34,7 +37,8 @@ function mapStateToProps(state, ownProps) {
 		email: user.email,
 		images: user.images,
 		cnt: user.images.length,
-		avatar: user.images[0].id
+		avatar: user.images[0].id,
+		unlocked: state.user.user.unlocked ? state.user.user.unlocked : []
 	};
 }
 

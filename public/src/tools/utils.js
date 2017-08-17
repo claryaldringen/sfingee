@@ -1,5 +1,5 @@
 
-import axios from 'axios';
+import { get } from 'axios';
 import { getPeopleSuccess } from '../actions/people';
 import { addLimit } from '../actions/filter';
 
@@ -8,7 +8,7 @@ export function getAge(birthdate) {
 }
 
 export function loadUsers(query, dispatch) {
-	axios.get('/api/users/', {params: query}).then((result) => {
+	get('/api/users/', {params: query}).then((result) => {
 
 		if (result.status !== 200) {
 

@@ -10,7 +10,11 @@ import {
 	OPEN_UPLOAD_DIALOG,
 	HIDE_UPLOAD_DIALOG,
 	SHOW_VIEWER,
-	HIDE_VIEWER
+	HIDE_VIEWER,
+	OPEN_LOCK_DIALOG,
+	HIDE_LOCK_DIALOG,
+	SHOW_PAY_DIALOG,
+	HIDE_PAY_DIALOG
 } from '../actions/dialogs'
 
 const INITIAL_STATE = {signUpDialog: false, forgottenEmail: null};
@@ -40,6 +44,14 @@ export default function(state = INITIAL_STATE, action) {
 			return { ...state, viewer: true };
 		case HIDE_VIEWER:
 			return { ...state, viewer: false };
+		case 	OPEN_LOCK_DIALOG:
+			return { ...state, lockDialog: true};
+		case HIDE_LOCK_DIALOG:
+			return { ...state, lockDialog: false};
+		case SHOW_PAY_DIALOG:
+			return { ...state, payDialog: true};
+		case HIDE_PAY_DIALOG:
+			return { ...state, payDialog: false};
 		default:
 			return state;
 	}
