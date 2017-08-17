@@ -19,6 +19,13 @@ export default class HomePage extends React.Component {
 								<span style={{fontSize: 48, color: '#FFF'}}>Sfingee</span>.com
 							</a>
 						</div>
+						<ul className="nav navbar-nav navbar-right">
+							<li >
+								<a style={{fontSize: 24, padding: '8px 0 0 0', cursor: 'pointer'}} onClick={this.props.showSignUpDialog}>
+									<img src="/img/male.png"/> Registrovat se
+								</a>
+							</li>
+						</ul>
 					</div>
 				</nav>
 				<div className="jumbotron" style={{color: '#FFF', height: 480, background: "url('/img/jumbotron.jpg') 100% 480px"}}>
@@ -77,7 +84,7 @@ export default class HomePage extends React.Component {
 							<a name="uzivejsi"/>
 							<h1>Chceš vést žhavý chat nebo si prohlížet fotky?</h1>
 							<p>
-								Stačí jednoduše nakoupit naše kredity a můžeš si prohlížet všechny fotografie všech uživatelů ve vysokém rozlišení, nebo vést lehtivý chat, kde zaplatíš pouze za opravdu prochatovaný čas.
+								Stačí jednoduše nakoupit naše kredity a můžeš si prohlížet všechny fotografie všech uživatelů ve vysokém rozlišení, nebo vést lechtivý chat, kde zaplatíš pouze za opravdu prochatovaný čas.
 								Své kredity si můžeš kdykoliv nechat převést zpět na peníze a nechat poslat na účet. Žhavé chatování nebylo nikdy bezpečnější.
 							</p>
 						</div>
