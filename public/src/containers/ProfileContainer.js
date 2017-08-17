@@ -109,7 +109,8 @@ function mapStateToProps(state, ownProps) {
     	hair: user.hair,
 			hairLong: user.hairLong,
 			experience: user.experience,
-			description: user.description
+			description: user.description,
+			account: user.account
 		},
 		loading: state.user.loading
   };

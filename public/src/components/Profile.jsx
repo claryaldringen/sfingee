@@ -76,6 +76,7 @@ class Profile extends React.Component {
 		let name = null;
 		let birthdate = null;
 		let description = null;
+		let account = null;
 		let chat = null;
 
 		if(!this.props.write) {
@@ -250,6 +251,13 @@ class Profile extends React.Component {
 					</td>
 				</tr>
 
+			account =
+				<tr>
+					<td>
+						<Field name="account" type="text" component={renderInput} label="Číslo účtu"/>
+					</td>
+				</tr>
+
 		}
 
 
@@ -273,6 +281,7 @@ class Profile extends React.Component {
 									{relationship}
 									{visage}
 									{experience}
+									{account}
 									{button}
 								</tbody>
 							</table>

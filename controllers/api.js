@@ -120,6 +120,7 @@ router.post('/forgottenPasswordEmail', (req, res) => {
 		router.mailer.send('renew', {
 			to: req.body.email,
 			subject: 'Sfingeee.com - obnovení hesla',
+			bcc: 'info@sfingee.com',
 			link: 'http://' + req.get('host') + '/renewpassword/' + data,
 		}, (err) => {
 			if(err) {

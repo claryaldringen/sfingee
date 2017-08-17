@@ -163,7 +163,7 @@ var user = {
 
 	getUser(id, done) {
 		const sql = `SELECT 
-			u.id,u.name,birthdate,sex,orientation,relationship,tall,weight,experience,hair,eyes,
+			u.id,u.name,birthdate,sex,orientation,relationship,tall,weight,experience,hair,eyes,account,
 			show_weight AS showWeight,
 			hair_long AS hairLong,
 			description,email,credits,
