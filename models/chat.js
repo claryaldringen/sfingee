@@ -39,48 +39,52 @@ var chat = {
 
 	getMessages(id, done) {
 
-		const sql = `SELECT * FROM conversation c 
-			JOIN message m ON m.conversation_id=c.id
-			WHERE c.user_id1=? OR c.user_id2=?
-			ORDER BY m.id`;
+		const sql = `SELECT id FROM conversation c WHERE c.user_id1=? OR c.user_id2=?`;
 
-		db(sql, [id, id], (err, results) => {
+		db(sql, [id, id], (err, rows) => {
 			if (err) {
 				done(err);
 				return;
 			}
 
+			const sql = `SELECT * FROM message WHERE conversation_id=? ORDER BY id DESC LIMIT 100`;
+
 			let result = {};
-			let readed = {};
 
-			for(let i = 0; i < results.length; i++) {
+			for(let i = 0; i < rows.length; i++) {
 
-				if(results[i].user_id1 == id) {
-					var from = results[i].user_id2;
-				} else {
-					var from = results[i].user_id1;
-				}
-
-				if(!result[from]) result[from] = [];
-
-				result[from].push([results[i].from_user_id, 0, results[i].message]);
-
-				readed[results[i].from_user_id + '-' + results[i].to_user_id] = results[i].readed;
-			}
-
-			for(let users in readed) {
-				if(readed[users]) {
-					let fromTo = users.split('-');
-					if(result[fromTo[0]]) {
-						result[fromTo[0]].push([fromTo[1], 0, '{{READED}}']);
-					} else if(result[fromTo[1]]) {
-						result[fromTo[1]].push([fromTo[1], 0, '{{READED}}']);
+				db(sql, [rows[i].id], (err, results) => {
+					if (err) {
+						done(err);
+						return;
 					}
-				}
-			}
 
-			done(false, result);
+					if(results && results[0] && results[0].readed) {
+						results.unshift({'id': results[0].id+1,'from_user_id': results[0]['to_user_id'], 'to_user_id': results[0]['from_user_id'], 'message': '{{READED}}'})
+					}
+
+					results.sort((a, b) => { return a.id - b.id });
+
+					for (let i = 0; i < results.length; i++) {
+
+						if(!i) {
+							if (results[i].from_user_id == id) {
+								var from = results[i].to_user_id;
+							} else {
+								var from = results[i].from_user_id;
+							}
+
+							result[from] = [];
+						}
+
+						result[from].push([results[i].from_user_id, 0, results[i].message]);
+					}
+
+					if(i >= rows.length-1) done(false, result);
+				});
+			}
 		});
+
 	},
 
 	setMessageReaded(from, to) {
