@@ -29,7 +29,18 @@ export default class Messages extends React.Component {
 		let unread = null;
 		if(this.props.unread) {
 			unread = <div style={{backgroundColor: '#FF0000', color: '#FFFFFF', width: 32, height: 32, borderRadius: 16, paddingTop: 6, textAlign: 'center',position: 'absolute',right: 0, bottom: 8,fontWeight: 'bold' }}>{this.props.unread}</div>
+			let title = ' nových zpráv';
+			if(this.props.unread == 1) {
+				title = ' nová zpráva';
+			} else if(this.props.unread < 5) {
+				title = ' nové zprávy';
+			}
+			document.title = this.props.unread + title + " - Sfingee.com";
+		} else {
+			document.title = 'Sfingee.com';
 		}
+
+		console.log(this.title);
 
 		return(
 			<div className="col-md-12" onClick={this.openChat.bind(this)} style={{cursor: 'pointer'}}>
