@@ -1,6 +1,7 @@
 
 import { GET_PEOPLE_SUCCESS, GET_PROFILE_SUCCESS } from '../actions/people'
 import { DELETE_IMAGE, SET_AS_AVATAR, SET_IMAGES, SET_LOCK_DONE } from "../actions/user";
+import { SET_CONVERSATION_LOCK} from "../actions/chat";
 
 const INITIAL_STATE = [];
 
@@ -58,6 +59,14 @@ export default function(state = INITIAL_STATE, action) {
 					item.images = item.images.sort((a, b) => { return a.brutto - b.brutto});
 				}
 				return item;
+			});
+
+		case SET_CONVERSATION_LOCK:
+			state.map( (user) => {
+				if(user.id == action.userId) {
+					user.locked = action.value;
+				}
+				return user;
 			});
 
 		default:

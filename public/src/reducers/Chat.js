@@ -1,5 +1,5 @@
 
-import { OPEN_CHAT, ADD_MESSAGE, SET_CHATS } from '../actions/chat'
+import { OPEN_CHAT, ADD_MESSAGE, SET_CHATS, REMOVE_LAST_MESSAGE } from '../actions/chat'
 import { OPEN_CHAT_DIALOG } from '../actions/dialogs'
 
 // [od koho, id, cas, precteno, zprava]
@@ -50,6 +50,13 @@ export default function(state = INITIAL_STATE, action) {
 				map.set(key*1, action.chats[key]);
 			});
 			return map;
+
+		case REMOVE_LAST_MESSAGE:
+
+			let conversation3 = state.get(action.userId);
+			conversation3.splice(conversation3.length-action.depth, action.depth);
+			state.set(action.userId, conversation3);
+			return new Map(state);
 
 		default:
 			return state;

@@ -63,7 +63,7 @@ var user = {
 	getUsers(data, userId, done) {
 
 		if(data.id) {
-			const sql = `SELECT u.id,u.name,u.email,u.birthdate,i.name AS image,i.extension 
+			const sql = `SELECT u.id,u.name,u.email,u.birthdate,i.name AS image,i.extension,chatprice
 			FROM user u 
 			JOIN image i ON i.user_id=u.id AND i.avatar=1 
 			WHERE u.id IN (?)`;
@@ -96,7 +96,7 @@ var user = {
 			const min = new Date(Date.now() - (data.maxage * 1 + 1) * 31556926000);
 			const max = new Date(Date.now() - (data.minage * 1 - 1) * 31556926000);
 
-			const sql = `SELECT u.id,u.name,u.email,u.birthdate,i.name AS image,i.extension 
+			const sql = `SELECT u.id,u.name,u.email,u.birthdate,i.name AS image,i.extension,u.chatprice 
 			FROM user u 
 			JOIN image i ON i.user_id=u.id AND i.avatar=1 
 			WHERE ${sex} u.active > 0 AND birthdate BETWEEN ? AND ? AND u.id != ? AND orientation IN (?) AND last_activity > ?
@@ -104,8 +104,40 @@ var user = {
 			LIMIT ?,?
 			`;
 
-			console.log([min, max, userId, orientation, date, data.limit ? data.limit*1 : 0, 21]);
-			db(sql, [min, max, userId, orientation, date, data.limit ? data.limit*1 : 0, 21], done);
+			db(sql, [min, max, userId, orientation, date, data.limit ? data.limit*1 : 0, 21], (err, users) => {
+
+				if (err) {
+					done(err);
+					return;
+				}
+
+				let ids = users.map((user) => {
+					return user.id
+				});
+
+				const sql =  `SELECT COUNT(*) AS cnt,IF(brutto>0,1,0) AS pay,user_id FROM image WHERE user_id IN (?) GROUP BY user_id,pay`;
+				db(sql, [ids], (err, images) => {
+
+					if (err) {
+						done(err);
+						return;
+					}
+
+					for(let i = 0; i < images.length; i++) {
+						for(let j = 0; j < users.length; j++) {
+							let image = images[i];
+							if(users[j].id == image['user_id']) {
+								if(image.pay) {
+									users[j].imgPayCnt = image.cnt;
+								} else {
+									users[j].imgFreeCnt = image.cnt;
+								}
+							}
+						}
+					}
+					done(false, users);
+				});
+			});
 		}
 	},
 
@@ -166,7 +198,7 @@ var user = {
 			u.id,u.name,birthdate,sex,orientation,relationship,tall,weight,experience,hair,eyes,account,
 			show_weight AS showWeight,
 			hair_long AS hairLong,
-			description,email,credits,
+			description,email,credits,chatprice,
 			CONCAT(i.name,'.',i.extension) AS avatar
 			FROM user u
 			JOIN image i ON i.user_id=u.id AND avatar=1
@@ -184,6 +216,33 @@ var user = {
 
 	setLastActivity(id) {
 		db("UPDATE user SET last_activity=NOW() WHERE id=?", [id], () => {});
+	},
+
+	transfer(from, to, brutto, netto, done) {
+		db("UPDATE user SET credits=credits+? WHERE id=?", [brutto, to], (err) => {
+			if(err) {
+				done(err);
+				return;
+			}
+			db("UPDATE user SET credits=credits-? WHERE id=?", [netto, from], (err) => {
+				if(err) {
+					done(err);
+					return;
+				}
+
+				db("SELECT id,credits FROM user WHERE id IN (?)", [[from, to]], (err, rows) => {
+					if(err) {
+						done(err);
+						return;
+					}
+
+					let result = {};
+					result[rows[0].id] = rows[0].credits;
+					result[rows[1].id] = rows[1].credits;
+					done(false, result);
+				});
+			});
+		});
 	}
 };
 

@@ -78,6 +78,7 @@ class Profile extends React.Component {
 		let description = null;
 		let account = null;
 		let chat = null;
+		let chatPrice = null;
 
 		if(!this.props.write) {
 
@@ -115,11 +116,14 @@ class Profile extends React.Component {
 					</tr>
 			}
 
+			let price = Math.ceil(this.props.chatprice*1.15);
+
 			chat =
 				<button className="btn btn-success btn-lg" style={{float: 'right'}} onClick={this.openChat.bind(this)}>
 					<img src="/img/chat.png" width={24} height={24}/>
 					&nbsp;
 					Chat
+					{price ? ' (' + price + ' kreditů za hodinu)' : null}
 				</button>
 
 		} else {
@@ -251,6 +255,13 @@ class Profile extends React.Component {
 					</td>
 				</tr>
 
+			chatPrice =
+				<tr>
+					<td>
+						<Field name="chatprice" type="number" min={0} max={1000000} component={renderInput} label="Cena za hodinu chatu"/>
+					</td>
+				</tr>
+
 			account =
 				<tr>
 					<td>
@@ -281,6 +292,7 @@ class Profile extends React.Component {
 									{relationship}
 									{visage}
 									{experience}
+									{chatPrice}
 									{account}
 									{button}
 								</tbody>

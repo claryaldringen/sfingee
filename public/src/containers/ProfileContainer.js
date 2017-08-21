@@ -96,6 +96,7 @@ function mapStateToProps(state, ownProps) {
 		userIndex: userIndex,
 	  write: user.id == state.user.user.id,
 		sex: user.sex,
+		chatprice: user.chatprice,
 		initialValues: {
     	name: user.name,
 			day: date[2],
@@ -110,7 +111,8 @@ function mapStateToProps(state, ownProps) {
 			hairLong: user.hairLong,
 			experience: user.experience,
 			description: user.description,
-			account: user.account
+			account: user.account,
+			chatprice: user.chatprice
 		},
 		loading: state.user.loading
   };

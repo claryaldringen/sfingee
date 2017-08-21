@@ -4,7 +4,7 @@ import { push } from 'react-router-redux';
 
 import { hideChatDialog,openChatDialog } from '../actions/dialogs'
 import { getUser, setUser } from '../actions/user'
-import { addMessage, loadChats, setChats, setChatUsers } from '../actions/chat'
+import { addMessage, loadChats, setChats, setChatUsers, setPaymentReciever } from '../actions/chat'
 
 
 const mapDispatchToProps = (dispatch) => {
@@ -45,6 +45,10 @@ const mapDispatchToProps = (dispatch) => {
 		},
 		showProfile(id) {
 			if(id) dispatch(push('/app/profile/' + id));
+		},
+		chatEnd(from, to) {
+			dispatch(addMessage(from, to, '{{CHAT_END}}', from));
+			dispatch(setPaymentReciever(to, false));
 		}
 	}
 }
@@ -56,11 +60,11 @@ function mapStateToProps(state, ownProps) {
 	for(let key of state.chat.keys()) {
 		const user = state.chatUser[key];
 		if(user) {
-			users.push(user);
+			users.push(Object.assign({}, user));
 		} else {
 			for(let i = 0; i < state.people.length; i++) {
 				if(state.people[i].id == key) {
-					users.push(state.people[i]);
+					users.push(Object.assign({}, state.people[i]));
 					break;
 				}
 			}

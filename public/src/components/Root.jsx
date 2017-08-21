@@ -3,7 +3,7 @@ import React from 'react'
 import { Provider } from 'react-redux'
 import { Router, Route, IndexRoute } from 'react-router'
 
-import App from './App';
+import App from '../containers/AppContainer';
 import HomePage from '../containers/HomePageContainer';
 import PeoplePage from '../containers/PeopleContainer';
 import Renew from '../containers/RenewContainer'

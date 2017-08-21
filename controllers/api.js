@@ -9,7 +9,7 @@ var Image = require('../models/image');
 var Chat = require('../models/chat');
 var cache = require('../models/cache');
 var repair = require('../utils/repair');
-
+var saveLastActivity = require('../utils/saveLastActivity');
 
 
 var storage = multer.diskStorage({
@@ -316,14 +316,6 @@ function checkHash(hash, res) {
 	}
 	saveLastActivity(hash);
 	return true;
-}
-
-function saveLastActivity(hash) {
-	const now = Date.now();
-	if(cache.hashes[hash].lastActivity + 120000 < now) {
-		cache.hashes[hash].lastActivity = now;
-		User.setLastActivity(cache.hashes[hash].id);
-	}
 }
 
 module.exports = router;

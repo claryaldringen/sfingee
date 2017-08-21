@@ -17,8 +17,19 @@ export default class ChatUsers extends React.Component {
 				unread = <div style={{backgroundColor: '#FF0000', color: '#FFFFFF', width: 24, height: 24, borderRadius: 12, paddingTop: 2, textAlign: 'center',position: 'absolute',left: 56, bottom: 0 }}>{user.unread}</div>
 			}
 
+			let chatEnd = null;
+			if(user.reciever) {
+				chatEnd =
+					<button className="btn btn-danger" style={{float: 'right', fontWeight: 'bold'}} onClick={this.props.endChat.bind(this, user.id)} title="Ukončit placený chat">
+						X
+					</button>
+			}
+
+			let price = Math.ceil(user.chatprice*1.15);
+
 			return(
 				<div key={'user_' + index} style={{height: 64, margin: 8, cursor: 'pointer', position: 'relative'}} onClick={this.props.openChat.bind(this, user.id)}>
+					{chatEnd}
 					<div style={{width: 64, height: 64, borderRadius: 32, overflow: 'hidden', float: 'left'}}>
 						<img src={'/uploads/' + user.email + '/' + user.image + '.' + user.extension} width="96"/>
 						{unread}
@@ -27,6 +38,10 @@ export default class ChatUsers extends React.Component {
 						{user.name}
 						&nbsp;&nbsp;
 						{online}
+					</span>
+					<br />
+					<span style={{color: 'blue', marginLeft: 8}}>
+						{price ? price + ' kr/hod' : null}
 					</span>
 				</div>
 			);

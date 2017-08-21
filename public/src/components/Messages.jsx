@@ -1,25 +1,15 @@
 
 import React from 'react'
-import io from 'socket.io-client'
 
 export default class Messages extends React.Component {
 
-	constructor(props) {
-		super(props);
-		this.socket = io();
-	}
-
 	openChat() {
-		this.props.openChat(this.props.userId);
+		this.props.openChat(this.props.opener, this.props.userId);
 		let chat = this.props.chats.get(this.props.userId);
 		if(chat) {
 			let lastMessage = chat[chat.length - 1];
 			if (lastMessage && lastMessage[2] != '{{READED}}') {
-				this.socket.emit('chat message', JSON.stringify({
-					from: this.props.opener,
-					to: this.props.userId,
-					msg: '{{READED}}'
-				}));
+				this.props.send(this.props.opener, this.props.userId, '{{READED}}');
 			}
 		}
 	}
@@ -39,8 +29,6 @@ export default class Messages extends React.Component {
 		} else {
 			document.title = 'Sfingee.com';
 		}
-
-		console.log(this.title);
 
 		return(
 			<div className="col-md-12" onClick={this.openChat.bind(this)} style={{cursor: 'pointer'}}>

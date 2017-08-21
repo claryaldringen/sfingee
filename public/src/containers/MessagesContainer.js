@@ -2,12 +2,14 @@
 import Messages from '../components/Messages';
 import { connect } from 'react-redux';
 
-import { openChatDialog } from '../actions/dialogs'
+import { openChatDialog } from '../actions/dialogs';
+import { addMessage } from "../actions/chat";
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		openChat(id) {
+		openChat(from, id) {
 			dispatch(openChatDialog(id));
+			dispatch(addMessage(from, id, '{{READED}}', id));
 		}
 	};
 };

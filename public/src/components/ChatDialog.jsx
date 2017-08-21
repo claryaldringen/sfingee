@@ -1,7 +1,6 @@
 
 import React from 'react'
 import { findDOMNode } from 'react-dom'
-import io from 'socket.io-client'
 import { emojify } from 'react-emoji'
 
 import Users from '../containers/ChatUsersContainer'
@@ -11,31 +10,25 @@ export default class ChatDialog extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {message: ''};
-		this.socket = io();
-		this.socket.on('chat message', (msg) => {
-			let message = JSON.parse(msg);
-			if(message.from == this.props.user.id || message.to == this.props.user.id) {
-				this.props.chatMessage(message, this.props.user.id);
-				if(message.from == this.props.userId && this.props.visibility && message.msg.indexOf('{{') == -1) {
-					this.socket.emit('chat message', JSON.stringify({
-						from: this.props.user.id,
-						to: message.from,
-						msg: '{{READED}}'
-					}));
-				}
-			}
-		});
 		this.writting = null;
+		this.startTime = 0;
+		this.totalTime = 0;
 	}
 
-	send() {
+	send(event) {
+		event.preventDefault();
+		event.stopPropagation();
 		if(this.state.message.replace(/\s/g,'')) {
-			this.socket.emit('chat message', JSON.stringify({
-				from: this.props.user.id,
-				to: this.props.userId,
-				msg: this.state.message
-			}));
+			if(this.writting) {
+				this.totalTime += (Date.now() - this.startTime);
+				this.startTime = 0;
+				clearTimeout(this.writting);
+			}
+			this.totalTime += this.state.message.replace(/\s+/g,' ').split(' ').length*333;
+			this.props.send(this.props.user.id, this.props.userId, this.state.message, this.totalTime);
+			this.props.chatMessage({from: this.props.user.id, to: this.props.userId, msg: this.state.message}, this.props.user.id);
 			this.setState({message: ''});
+			this.totalTime = 0;
 		}
 	}
 
@@ -44,47 +37,32 @@ export default class ChatDialog extends React.Component {
 	}
 
 	handleKeyDown(event) {
+
+		if(!this.startTime) {
+			this.startTime = Date.now();
+		}
+
 		if(event.key == 'Enter') {
-			event.preventDefault();
-			if(this.writting) clearTimeout(this.writting);
-			this.send();
+			this.send(event);
 			return;
 		}
 
 		if(this.writting) {
 			clearTimeout(this.writting);
 		} else {
-			this.socket.emit('chat message', JSON.stringify({
-				from: this.props.user.id,
-				to: this.props.userId,
-				msg: '{{WRITE_START}}'
-			}));
+			this.props.send(this.props.user.id, this.props.userId, '{{WRITE_START}}');
 		}
 
 		this.writting = setTimeout(() => {
 			this.writting = null;
-			this.socket.emit('chat message', JSON.stringify({
-				from: this.props.user.id,
-				to: this.props.userId,
-				msg: '{{WRITE_STOP}}'
-			}));
+			this.totalTime += 1500;
+			this.startTime = 0;
+			this.props.send(this.props.user.id, this.props.userId, '{{WRITE_STOP}}');
 		}, 1500);
 
 	}
 
-	openChat(id) {
-		if(id != this.props.userId) {
-			this.props.openChat(id);
-			let chat = this.props.chats.get(id);
-			let lastMessage = chat[chat.length-1]
-			if(lastMessage && lastMessage[2] != '{{READED}}') {
-				this.socket.emit('chat message', JSON.stringify({
-					from: this.props.user.id,
-					to: id,
-					msg: '{{READED}}'
-				}));
-			}
-		}
+	handleKeyUp(event) {
 	}
 
 	scrollToBottom() {
@@ -97,6 +75,25 @@ export default class ChatDialog extends React.Component {
 
 	showProfile() {
 		this.props.showProfile(this.props.titleId);
+	}
+
+	openChat(id) {
+		if(id != this.props.userId) {
+			this.props.openChat(id);
+			let chat = this.props.chats.get(id);
+			let lastMessage = chat[chat.length-1];
+			if(lastMessage && lastMessage[2] != '{{READED}}') {
+				this.props.send(this.props.user.id, id, '{{READED}}');
+				this.props.chatMessage({from: this.props.user.id, to: id, msg: '{{READED}}'}, this.props.user.id);
+			}
+		}
+	}
+
+	endChat(id, event) {
+		event.stopPropagation();
+		event.preventDefault();
+		this.props.send(this.props.user.id, id, '{{CHAT_END}}');
+		this.props.chatEnd(this.props.user.id, id);
 	}
 
 	componentDidMount() {
@@ -123,6 +120,17 @@ export default class ChatDialog extends React.Component {
 		let messages = this.props.conversation.map( (message, index) => {
 
 			lastMessage = {from: message[0], message: message[2]};
+
+			if(message[2] == '{{CHAT_END}}') {
+				return(
+					<div className="row" key={'message_' + index}>
+						<div className="col-sm-12" style={{textAlign: 'center', color: 'blue'}}>
+							Konec placeného chatu
+						</div>
+					</div>
+				);
+			}
+
 			if(message[2].indexOf('{{') == 0) return null;
 
 			let align = message[0] == this.props.userId ? '' : 'col-sm-offset-6';
@@ -148,6 +156,15 @@ export default class ChatDialog extends React.Component {
 			readed = <div className="col-md-12" style={{textAlign: 'left'}}><span style={{color: '#AAA', fontSize: 10}}>Píše...</span></div>
 		}
 
+		let lock = null;
+		let user = this.props.users[0];
+		if(user.locked) {
+			lock =
+				<div className="col-md-12" style={{color: 'blue', textAlign: 'center'}}>
+					<h4>Počkejte až {user.name} odpoví nebo nebo napište další zprávu za 100 kreditů.</h4>
+				</div>
+		}
+
 		return(
 			<div className="modal fade in" style={{display: 'block',background: 'rgba(51, 51, 51, 0.5)'}}>
 				<div className="modal-dialog" style={{width: '70%'}}>
@@ -160,14 +177,15 @@ export default class ChatDialog extends React.Component {
 						</div>
 						<div className="modal-body">
 							<div className="row">
-								<Users users={this.props.users} userId={this.props.user.id} openChat={this.openChat.bind(this)}/>
+								<Users users={this.props.users} userId={this.props.user.id} openChat={this.openChat.bind(this)} endChat={this.endChat.bind(this)}/>
 								<div className="col-md-9">
 									<div style={{height: 540, overflowY: 'auto', overflowX: 'hidden'}} ref="main" >
 										{messages}
 										{readed}
+										{lock}
 									</div>
 									<div className="col-md-9">
-										<textarea value={this.state.message} onChange={this.handleChange.bind(this)} onKeyDown={this.handleKeyDown.bind(this)} className="form-control input-lg" rows="1" style={{resize: 'none'}} />
+										<textarea value={this.state.message} onChange={this.handleChange.bind(this)} onKeyDown={this.handleKeyDown.bind(this)} onKeyUp={this.handleKeyUp.bind(this)} className="form-control input-lg" rows="1" style={{resize: 'none'}} />
 									</div>
 									<div className="col-md-3">
 										<button className="btn btn-success btn-lg" onClick={this.send.bind(this)}>Odeslat</button>

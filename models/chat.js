@@ -1,39 +1,138 @@
 
 var db = require('./db');
+var cache = require('./cache');
 
 var chat = {
 
-	addMessage(conversationId, from, to, message, done) {
+	addMessage(from, to, message, time, done) {
 
-		if(conversationId == null) {
+		if (from > to) {
+			var values = [to, from];
+		} else {
+			var values = [from, to]
+		}
 
-			if (from > to) {
-				var values = [to, from];
-			} else {
-				var values = [from, to]
+		db("SELECT id,locked FROM conversation WHERE user_id1=? AND user_id2=?", values, (err, results) => {
+			if(err) {
+				done(err);
+				return;
 			}
-			db("SELECT id FROM conversation WHERE user_id1=? AND user_id2=?", values, (err, results) => {
-				if (results[0]) {
-					return this._addMessage(results[0].id, from, to, message, done);
-				} else {
+
+			if (results[0]) {
+
+				if(message == '{{CHAT_END}}') {
+					db("SELECT message FROM message WHERE conversation_id=? ORDER BY id DESC LIMIT 1", [results[0].id], (err, messages) => {
+						if(err) {
+							done(err);
+							return;
+						}
+
+						if(messages[0].message != '{{CHAT_END}}') {
+							return this._addMessage(results[0], from, to, message, time, 0, 0, null, done);
+						}
+
+						done();
+						return;
+					});
+				}
+
+				db("SELECT reciever_id,to_user_id FROM message WHERE conversation_id=? ORDER BY id DESC LIMIT 2", [results[0].id], (err, messages) => {
+
+					if(err) {
+						done(err);
+						return;
+					}
+
+					let reciever = messages[0]['reciever_id'] ? messages[0]['reciever_id'] : to;
+
+					db("SELECT chatprice FROM user WHERE id=?", [reciever], (err, users) => {
+
+						let brutto = Math.floor((users[0].chatprice/36000)*time)/100;
+						let netto = (Math.ceil(brutto*115)/100);
+
+						if(messages[0]['to_user_id'] == to && to != reciever) {
+							let found = false;
+							for(let hash of cache.hashes) {
+								if(cache.hashes[hash].id == to) {
+									found = true;
+									if (cache.hashes[hash].lastActivity < (Date.now() - 120000)) netto = 0;
+									break;
+								}
+							}
+							if(!found) netto = 0;
+						}
+
+						if(!brutto && to == messages[0]['to_user_id'] && results[0].locked && messages.length > 1) {
+							netto = 100;
+						} else if(to != messages[0]['to_user_id'] || brutto) {
+							db("UPDATE conversation SET locked=0 WHERE id=?", [results[0].id], (err) => {
+								if(err) {
+									console.log(err);
+								}
+							})
+						}
+
+						if(netto > 0) {
+							netto += 0.01;
+							db("SELECT credits FROM user WHERE id IN (?) AND id != ?", [values, reciever], (err, credits) => {
+								if(err) {
+									done(err);
+									return;
+								}
+
+								if(credits[0].credits < netto) {
+									this._addMessage(results[0], from, to, '{{CHAT_END}}', 0, 0, 0, null, () => {
+										done({code: 'LOW_CREDIT'});
+									});
+									return;
+								}
+
+								return this._addMessage(results[0], from, to, message, time, brutto, netto, reciever, done);
+							});
+						} else {
+							return this._addMessage(results[0], from, to, message, time, brutto, netto, reciever, done);
+						}
+					});
+				});
+			} else {
+				db("SELECT chatprice FROM user WHERE id=?", [to], (err, user) => {
+					if (err) {
+						done(err);
+						return;
+					}
+
 					db("INSERT INTO conversation (user_id1,user_id2) VALUES (?,?)", values, (err, results) => {
 						if (err) {
 							done(err);
 							return;
 						}
 
-						return this._addMessage(results.insertId, from, to, message, done);
+						let brutto = Math.floor((user[0].chatprice/36000)*time)/100;
+						let netto = (Math.ceil(brutto*115)/100);
+						if(netto > 0) netto += 0.01;
+
+						return this._addMessage({id: results.insertId, locked: 1}, from, to, message, time, brutto, netto, to, done);
 					});
-				}
-			})
-		} else {
-			this._addMessage(conversationId, from, to, message, done);
-		}
+				});
+			}
+		});
 	},
 
-	_addMessage(conversationId, from, to, message, done) {
-		db("INSERT INTO message (conversation_id, from_user_id, to_user_id, message) VALUES (?,?,?,?)", [conversationId, from, to, message], (err, results) => {
-			done(err, conversationId);
+
+	_addMessage(conversation, from, to, message, time, brutto, netto, reciever, done) {
+		db("INSERT INTO message (conversation_id, from_user_id, to_user_id, message, microtime, brutto, netto, reciever_id) VALUES (?,?,?,?,?,?,?,?)", [conversation.id, from, to, message, time, brutto, netto, reciever], (err, results) => {
+			if(err) {
+				done(err);
+				return;
+			}
+
+			let result = {to: reciever, brutto: brutto, netto: netto, locked: conversation.locked};
+			if(reciever == from) {
+				result.from = to
+			} else {
+				result.from = from;
+			}
+			done(false, result);
 		})
 	},
 
@@ -87,8 +186,8 @@ var chat = {
 
 	},
 
-	setMessageReaded(from, to) {
-		db('UPDATE message SET readed=1 WHERE from_user_id=? AND to_user_id=? ORDER BY id DESC LIMIT 1', [from, to], () => {});
+	setMessageReaded(from, to, done) {
+		db('UPDATE message SET readed=1 WHERE from_user_id=? AND to_user_id=? ORDER BY id DESC LIMIT 1', [from, to], done);
 	}
 
 };
