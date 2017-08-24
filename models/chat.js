@@ -148,7 +148,7 @@ var chat = {
 
 	getMessages(id, done) {
 
-		const sql = `SELECT id FROM conversation c WHERE c.user_id1=? OR c.user_id2=?`;
+		const sql = `SELECT id,locked FROM conversation c WHERE c.user_id1=? OR c.user_id2=?`;
 
 		db(sql, [id, id], (err, rows) => {
 			if (err) {
@@ -188,6 +188,8 @@ var chat = {
 
 						result[from].push([results[i].from_user_id, 0, results[i].message]);
 					}
+
+					if(rows[i].locked && result[from] && result[from].length) result[from].push([results[results.length-1].from_user_id, 0, '{{LOCKED}}']);
 
 					if(i >= rows.length-1) done(false, result);
 				});

@@ -189,7 +189,11 @@ router.get('/chats/:authhash', (req, res) => {
 
 				let users = {};
 				for (let i = 0; i < usersData.length; i++) {
-					users[usersData[i].id] = usersData[i];
+					const id = usersData[i].id;
+					users[id] = usersData[i];
+					if(data[id][data[id].length - 1]) {
+						users[id].locked = data[id][data[id].length - 1][2] == '{{LOCKED}}';
+					}
 				}
 
 				res.json({chats: data, users: users});
