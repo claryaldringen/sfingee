@@ -65,11 +65,11 @@ io.on('connection', function(socket){
 
 				send(socket, message.to, msg);
 
-				if(data.locked && !data.brutto) {
+				if(data && data.locked && !data.brutto) {
 					socket.emit('chat message', JSON.stringify({from: message.from, to: message.to, msg: '{{LOCKED}}'}));
 				}
 
-				if(data.to && data.netto) {
+				if(data && data.to && data.netto) {
 					User.transfer(data.from, data.to, data.brutto, data.netto, (err, balance) => {
 						if(err) {
 							console.log(err);

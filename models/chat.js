@@ -21,17 +21,8 @@ var chat = {
 			if (results[0]) {
 
 				if(message == '{{CHAT_END}}') {
-					db("SELECT message FROM message WHERE conversation_id=? ORDER BY id DESC LIMIT 1", [results[0].id], (err, messages) => {
-						if(err) {
-							done(err);
-							return;
-						}
-
-						if(messages[0].message != '{{CHAT_END}}') {
-							return this._addMessage(results[0], from, to, message, time, 0, 0, null, done);
-						}
-
-						done();
+					this._chatEnd(results[0], from, to, (err) => {
+						done(err);
 						return;
 					});
 				}
@@ -81,9 +72,12 @@ var chat = {
 								}
 
 								if(credits[0].credits < netto) {
-									this._addMessage(results[0], from, to, '{{CHAT_END}}', 0, 0, 0, null, () => {
-										done({code: 'LOW_CREDIT'});
+									this._chatEnd(results[0], from, to, (err) => {
+										done(err);
+										return;
 									});
+
+									done({code: 'LOW_CREDIT'});
 									return;
 								}
 
@@ -134,6 +128,22 @@ var chat = {
 			}
 			done(false, result);
 		})
+	},
+
+	_chatEnd(conversation, from, to, done) {
+		db("SELECT message FROM message WHERE conversation_id=? ORDER BY id DESC LIMIT 1", [conversation.id], (err, messages) => {
+			if(err) {
+				done(err);
+				return;
+			}
+
+			if(messages[0].message != '{{CHAT_END}}') {
+				return this._addMessage(conversation, from, to, '{{CHAT_END}}', 0, 0, 0, null, done);
+			}
+
+			done({code: 'CHAT_END_ALREADY_SENT'});
+			return;
+		});
 	},
 
 	getMessages(id, done) {
