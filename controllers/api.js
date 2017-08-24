@@ -83,6 +83,12 @@ router.get('/users', (req, res) => {
 	if(!checkHash(req.query.authhash, res)) return;
 
 	User.getUsers(req.query, cache.hashes[req.query.authhash].id, (err, data) => {
+		if(err) {
+			console.log(err);
+			res.json({error: err});
+			return
+		}
+
 		res.json(
 			data.map( (user, index) => {
 				user.lastActivity = 0;

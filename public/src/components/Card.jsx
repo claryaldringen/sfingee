@@ -16,6 +16,9 @@ export default class Card extends React.Component {
 
 	render() {
 
+		const payCnt = this.props.data.imgPayCnt ? this.props.data.imgPayCnt : 0;
+		const freeCnt = this.props.data.imgFreeCnt ? this.props.data.imgFreeCnt : 0;
+
 		let style = {
 			border: 'solid 1px #EEE',
 			padding: 0,
@@ -46,8 +49,8 @@ export default class Card extends React.Component {
 					</h4>
 					<div className="row">
 						<div className="col-md-6">
-							<div style={{width: 32, height: 32, backgroundImage: 'url("/img/picture.png")', textAlign: 'center', paddingTop: 6, color: 'blue', margin: 'auto'}} >
-								<span style={{background: 'white'}} title={(this.props.data.imgPayCnt+this.props.data.imgFreeCnt) + ' obrázků, z toho ' + this.props.data.imgPayCnt + ' zamčených'}>{this.props.data.imgPayCnt}/{this.props.data.imgFreeCnt}</span>
+							<div style={{width: 32, height: 32, backgroundImage: 'url("/img/picture.png")', textAlign: 'center', paddingTop: 6, color: 'blue', margin: 'auto'}} onClick={this.openChat.bind(this)} title={'Začít chat za ' + price + ' kreditů za hodinu'}>
+								<span style={{background: 'white'}} title={(payCnt+freeCnt) + ' obrázků, z toho ' + payCnt + ' zamčených'}>{freeCnt}/{payCnt}</span>
 							</div>
 						</div>
 						<div className="col-md-6" style={{textAlign: 'right'}}>
