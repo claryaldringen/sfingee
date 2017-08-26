@@ -160,6 +160,7 @@ var chat = {
 
 			let result = {};
 
+			let cycles = 0;
 			for(let i = 0; i < rows.length; i++) {
 
 				db(sql, [rows[i].id], (err, results) => {
@@ -191,7 +192,8 @@ var chat = {
 
 					if(rows[i].locked && result[from] && result[from].length) result[from].push([results[results.length-1].from_user_id, 0, '{{LOCKED}}']);
 
-					if(i >= rows.length-1) done(false, result);
+					cycles++;
+					if(cycles >= rows.length) done(false, result);
 				});
 			}
 		});

@@ -72,7 +72,7 @@ function mapStateToProps(state, ownProps) {
 	}
 
 	let userId = null;
-	let conversation = null;
+	let conversation = [];
 	for(let [id, messages] of state.chat) {
 		if(!userId) {
 			userId = id;

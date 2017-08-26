@@ -19,9 +19,9 @@ export function addMessage(from, to, message, userId) {
 	return {type: ADD_MESSAGE, from: from, to: to, message: message, userId: userId}
 }
 
-export function loadChats() {
+export function loadChats(online = false) {
 
-	const request = get('/api/chats/' + getAuthHash());
+	const request = get('/api/chats/' + getAuthHash() + '/' + online);
 
 	return {type: LOAD_CHATS, payload: request}
 }

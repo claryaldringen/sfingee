@@ -73,7 +73,8 @@ router.get('/authhash/:email/:password', (req, res) => {
 			return
 		}
 		let hash = md5(data + req.params.email + Date.now());
-		cache.hashes[hash] = {id: data, expiration: Date.now() + 600000, lastActivity: Date.now(), email: req.params.email};
+		cache.hashes[hash] = {id: data, expiration: Date.now() + 300000, email: req.params.email};
+		saveLastActivity(hash);
 		res.json({authhash: hash});
 	});
 });
@@ -167,7 +168,7 @@ router.put('/user', (req, res) => {
 	});
 });
 
-router.get('/chats/:authhash', (req, res) => {
+router.get('/chats/:authhash/:online', (req, res) => {
 
 	if(!checkHash(req.params.authhash, res)) return;
 
@@ -180,7 +181,7 @@ router.get('/chats/:authhash', (req, res) => {
 		}
 
 		if(Object.keys(data).length) {
-			User.getUsers({id: Object.keys(data)}, null, (err, usersData) => {
+			User.getUsers({id: Object.keys(data), online: req.params.online}, null, (err, usersData) => {
 				if (err) {
 					console.log(err);
 					res.json({error: err});
@@ -188,15 +189,17 @@ router.get('/chats/:authhash', (req, res) => {
 				}
 
 				let users = {};
+				let chats = {};
 				for (let i = 0; i < usersData.length; i++) {
 					const id = usersData[i].id;
 					users[id] = usersData[i];
 					if(data[id][data[id].length - 1]) {
 						users[id].locked = data[id][data[id].length - 1][2] == '{{LOCKED}}';
 					}
+					if(data[id]) chats[id] = data[id];
 				}
 
-				res.json({chats: data, users: users});
+				res.json({chats: chats, users: users});
 			});
 		} else {
 			res.json({chats: {}, users: {}});

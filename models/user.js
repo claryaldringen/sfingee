@@ -62,13 +62,18 @@ var user = {
 
 	getUsers(data, userId, done) {
 
+		let date = '1970-01-01 01:00:00';
+		if(data.online && data.online == 'true') {
+			date = new Date(Date.now() - 300000);
+		}
+
 		if(data.id) {
-			const sql = `SELECT u.id,u.name,u.email,u.birthdate,i.name AS image,i.extension,chatprice
+			const sql = `SELECT u.id,u.name,u.email,u.birthdate,i.name AS image,i.extension,chatprice,(UNIX_TIMESTAMP(last_activity)*1000) AS lastActivity 
 			FROM user u 
 			JOIN image i ON i.user_id=u.id AND i.avatar=1 
-			WHERE u.id IN (?)`;
+			WHERE u.id IN (?) AND last_activity > ?`;
 
-			db(sql, [data.id], done);
+			db(sql, [data.id, date], done);
 		} else {
 			const sex = {
 				'truefalse': 'sex=0 AND ',
@@ -88,15 +93,11 @@ var user = {
 				orientation = [1,2,3,4]
 			}
 			orientation.push(0);
-			let date = '1970-01-01 01:00:00';
-			if(data.online && data.online == 'true') {
-				date = new Date(Date.now() - 300000);
-			}
 
 			const min = new Date(Date.now() - (data.maxage * 1 + 1) * 31556926000);
 			const max = new Date(Date.now() - (data.minage * 1 - 1) * 31556926000);
 
-			const sql = `SELECT u.id,u.name,u.email,u.birthdate,i.name AS image,i.extension,u.chatprice 
+			const sql = `SELECT u.id,u.name,u.email,u.birthdate,i.name AS image,i.extension,u.chatprice,(UNIX_TIMESTAMP(last_activity)*1000) AS lastActivity 
 			FROM user u 
 			JOIN image i ON i.user_id=u.id AND i.avatar=1 
 			WHERE ${sex} u.active > 0 AND birthdate BETWEEN ? AND ? AND u.id != ? AND orientation IN (?) AND last_activity > ?
@@ -199,7 +200,8 @@ var user = {
 			show_weight AS showWeight,
 			hair_long AS hairLong,
 			description,email,credits,chatprice,
-			CONCAT(i.name,'.',i.extension) AS avatar
+			CONCAT(i.name,'.',i.extension) AS avatar,
+			(UNIX_TIMESTAMP(last_activity)*1000) AS lastActivity
 			FROM user u
 			JOIN image i ON i.user_id=u.id AND avatar=1
       WHERE u.id=?`;

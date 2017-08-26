@@ -68,7 +68,7 @@ export function signUpUserFailure() {
 }
 
 export function signInUser(formValues) {
-	const request = get('api/authhash/' + formValues.siemail.toLowerCase() + '/' + formValues.sipassword);
+	const request = get('/api/authhash/' + formValues.siemail.toLowerCase() + '/' + formValues.sipassword);
 	return {
 		type: SIGNIN_USER,
 		payload: request

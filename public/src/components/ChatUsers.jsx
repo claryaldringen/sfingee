@@ -3,12 +3,17 @@ import React from 'react'
 
 export default class ChatUsers extends React.Component {
 
+	setOnline(value, event) {
+		event.stopPropagation();
+		this.props.setOnline(value);
+	}
+
 	render() {
 
 		let users = this.props.users.map( (user, index) => {
 
 			let online = null;
-			if(user.lastActivity > Date.now() - 600000) {
+			if(user.lastActivity > Date.now() - 300000) {
 				online = <div style={{backgroundColor: '#00FF00', border: 'solid 1px #00BB00', width: 12, height: 12, borderRadius: 6, display: 'inline-block'}} title="Online"/>
 			}
 
@@ -49,6 +54,18 @@ export default class ChatUsers extends React.Component {
 
 		return(
 			<div className="col-md-3" style={{borderRight: 'solid 1px #e5e5e5', height: 580}}>
+				<div className="row" style={{textAlign: 'center', fontSize: 18, borderBottom: '1px solid #e5e5e5', paddingBottom: 16}}>
+					<div className="col-sm-6">
+						<span onClick={this.setOnline.bind(this, true)} className={'label label-' + (this.props.online ? 'info' : 'default')} style={{cursor: 'pointer'}}>
+							Online
+						</span>
+					</div>
+					<div className="col-sm-6">
+						<span onClick={this.setOnline.bind(this, false)} className={'label label-' + (this.props.online ? 'default' : 'info')} style={{cursor: 'pointer'}}>
+							Všichni
+						</span>
+					</div>
+				</div>
 				{users}
 			</div>);
 	}

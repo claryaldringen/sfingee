@@ -158,7 +158,7 @@ export default class ChatDialog extends React.Component {
 
 		let lock = null;
 		let user = this.props.users[0];
-		if(user.locked) {
+		if(user && user.locked) {
 			lock =
 				<div className="col-md-12" style={{color: 'blue', textAlign: 'center'}}>
 					<h4>Počkejte až {user.name} odpoví nebo nebo napište další zprávu za 100 kreditů.</h4>

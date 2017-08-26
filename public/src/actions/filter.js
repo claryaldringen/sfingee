@@ -9,6 +9,7 @@ export const TOGGLE_HETERO = 'TOGGLE_HETERO';
 export const TOGGLE_HOMO = 'TOGGLE_HOMO';
 export const TOGGLE_BI = 'TOGGLE_BI';
 export const TOGGLE_ONLINE = 'TOGGLE_ONLINE';
+export const SET_CHAT_ONLINE_DONE = 'SET_CHAT_ONLINE_DONE';
 
 export function toggleMan() {
 	return {type: TOGGLE_MAN}
@@ -48,4 +49,9 @@ export function toggleBi() {
 
 export function toggleOnline() {
 	return {type: TOGGLE_ONLINE}
+}
+
+export function setChatOnlineDone(value) {
+
+	return {type: SET_CHAT_ONLINE_DONE, value: value}
 }
