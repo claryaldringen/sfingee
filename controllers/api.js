@@ -3,6 +3,7 @@ var md5 = require('md5');
 var multer = require('multer');
 var path = require('path');
 var mkdirp = require('mkdirp');
+var sharp = require('sharp');
 
 var User = require('../models/user');
 var Image = require('../models/image');
@@ -42,27 +43,37 @@ var upload = multer({ storage: storage });
 router.route('/user').post(upload.single('image'), (req, res) => {
 	let user = req.body;
 	user.image = req.file.filename;
-	user.birthdate = user.year + '-' + repair(user.month) + '-' + repair(user.day);
-	User.createUser(user, (err, data) => {
-		console.log(data);
-		if(err) {
-			res.json({error: err});
-			return
-		}
-		let hash = md5(data.insertId + req.body.email);
-		cache.hashes[hash] = {id: data.insertId, expiration: Infinity};
-		router.mailer.send('register', {
-			to: req.body.email,
-			subject: 'Sfingee.com - dokončení registrace',
-			link: 'http://' + req.get('host') + '/finishregistration/' + hash,
-			login: req.body.login
-		}, (err) => {
-			if(err) {
-				res.send(err);
+	const smallName = req.file.filename.replace('.', 'sm.');
+	sharp('./public/uploads/' + req.body.email + '/' + req.file.filename)
+		.resize(160)
+		.toFile('./public/uploads/' + req.body.email + '/' + smallName, (err, info) => {
+			if (err) {
+				console.log(err);
 				return;
 			}
-			res.json(data);
-		});
+
+			user.birthdate = user.year + '-' + repair(user.month) + '-' + repair(user.day);
+			User.createUser(user, (err, data) => {
+				console.log(data);
+				if (err) {
+					res.json({error: err});
+					return
+				}
+				let hash = md5(data.insertId + req.body.email);
+				cache.hashes[hash] = {id: data.insertId, expiration: Infinity};
+				router.mailer.send('register', {
+					to: req.body.email,
+					subject: 'Sfingee.com - dokončení registrace',
+					link: 'http://' + req.get('host') + '/finishregistration/' + hash,
+					login: req.body.login
+				}, (err) => {
+					if (err) {
+						res.send(err);
+						return;
+					}
+					res.json(data);
+				});
+			});
 	});
 });
 
@@ -250,27 +261,37 @@ router.route('/images').post(upload.single('photos'), (req, res) => {
 
 	uploadedFiles.push(req.file.filename);
 
-	if(req.body.index == req.body.count-1) {
-		Image.insert({files: uploadedFiles, userId: cache.hashes[req.body.authhash].id}, (err, data) => {
+	const smallName = req.file.filename.replace('.', 'sm.');
 
-			uploadedFiles = [];
+	sharp('./public/uploads/' + cache.hashes[req.body.authhash].email + '/' + req.file.filename)
+		.resize(160)
+		.toFile('./public/uploads/' + cache.hashes[req.body.authhash].email + '/' + smallName, (err, info) => {
 			if(err) {
 				console.log(err);
 				return;
 			}
+			if(req.body.index == req.body.count-1) {
+				Image.insert({files: uploadedFiles, userId: cache.hashes[req.body.authhash].id}, (err, data) => {
 
-			Image.getByUser(cache.hashes[req.body.authhash].id, (err, data) => {
-				if(err) {
-					console.log(err);
-					return;
-				}
-				res.json({images: data});
-			});
+					uploadedFiles = [];
+					if(err) {
+						console.log(err);
+						return;
+					}
 
-		});
-	} else {
-		res.json({progess: req.body.index});
-	}
+					Image.getByUser(cache.hashes[req.body.authhash].id, (err, data) => {
+						if(err) {
+							console.log(err);
+							return;
+						}
+						res.json({images: data});
+					});
+
+				});
+			} else {
+				res.json({progess: req.body.index});
+			}
+	});
 });
 
 router.delete('/image/:authhash/:imageId/:isAvatar', (req, res) => {

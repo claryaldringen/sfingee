@@ -5,11 +5,14 @@ import { Link } from 'react-router'
 export default class Avatar extends React.Component {
 
 	render() {
+
+		if(!this.props.image) return null;
+
 		return(
 			<div style={{textAlign: 'center', borderBottom: 'solid 1px #EEE', padding: 24}}>
 				<a href={'/app/profile/' + this.props.id}>
 					<div style={{width: 128, height: 128, overflow: 'hidden', borderRadius: 16, margin: 'auto'}}>
-						<img src={'/uploads/' + this.props.email + '/' + this.props.image} style={{minHeight: 128, width: '100%'}} />
+						<img src={'/uploads/' + this.props.email + '/' + this.props.image.replace('.', 'sm.')} style={{minHeight: 128, width: '100%'}} />
 					</div>
 					<h4>{this.props.name}</h4>
 				</a>

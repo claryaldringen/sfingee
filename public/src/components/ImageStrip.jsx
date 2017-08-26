@@ -134,7 +134,7 @@ export default class ImageStrip extends React.Component {
 			let img = null;
 
 			if(!image.netto || this.props.unlocked.indexOf(image.id) !== -1 || this.props.write) {
-				img = <img src={'/uploads/' + this.props.email + '/' + image.name + '.' + image.extension} style={{maxWidth: 142, minHeight: 142}}/>
+				img = <img src={'/uploads/' + this.props.email + '/' + image.name + 'sm.' + image.extension} style={{maxWidth: 142, minHeight: 142}}/>
 			} else {
 				img = <div style={{width: 142, height: 142, borderRight: '1px solid #e5e5e5'}}></div>
 			}

@@ -42,7 +42,7 @@ export default class Card extends React.Component {
 				<div className="col-sm-12" style={style}>
 					<div style={{height: 180, overflow: 'hidden'}}>
 						{online}
-						<img src={'/uploads/' + this.props.data.email + '/' + this.props.data.image + '.' + this.props.data.extension} style={{width: '100%'}}/>
+						<img src={'/uploads/' + this.props.data.email + '/' + this.props.data.image + 'sm.' + this.props.data.extension} style={{width: '100%'}}/>
 					</div>
 					<h4 style={{paddingLeft: 12}}>
 						{this.props.data.name.split(' ')[0]}, {getAge(this.props.data.birthdate)}
