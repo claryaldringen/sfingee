@@ -162,10 +162,12 @@ router.put('/user', (req, res) => {
 		if(!checkHash(req.body.authhash, res)) return;
 		req.body.id = cache.hashes[req.body.authhash].id;
 		delete(req.body.authhash);
-		req.body.birthdate = req.body.year + '-' + repair(req.body.month) + '-' + repair(req.body.day);
-		delete(req.body.year);
-		delete(req.body.month);
-		delete(req.body.day);
+		if(req.body.year && req.body.month && req.body.day) {
+			req.body.birthdate = req.body.year + '-' + repair(req.body.month) + '-' + repair(req.body.day);
+			delete(req.body.year);
+			delete(req.body.month);
+			delete(req.body.day);
+		}
 		method = 'updateUser';
 	}
 

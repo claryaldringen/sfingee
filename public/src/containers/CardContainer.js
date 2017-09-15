@@ -19,7 +19,10 @@ const mapDispatchToProps = (dispatch) => {
 
 function mapStateToProps(state, ownProps) {
 
-	return {};
+	return {
+		latitude: state.user.user.latitude,
+		longitude: state.user.user.longitude
+	};
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Card);

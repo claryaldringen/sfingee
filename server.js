@@ -116,9 +116,10 @@ io.on('connection', function(socket){
 
 function send(socket, to, msg) {
 	for(let hash in cache.hashes) {
-		if(cache.hashes[hash].id == to) {
+		if(cache.hashes[hash].id == to && cache.hashes[hash].lastActivity > (Date.now() - 300000)) {
 			socket.broadcast.to(cache.hashes[hash].socketId).emit('chat message', msg);
-			break;
+			return;
 		}
 	}
+
 }

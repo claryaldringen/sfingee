@@ -1,10 +1,12 @@
 
 import React from 'react'
 import { Field, reduxForm, SubmissionError } from 'redux-form';
+
 import { renderInput, renderSelect, renderDateField, renderTextArea } from './InputField';
 import { getRelationship, getOrientation, getEyes, getHair, getHairLong, getExperience } from '../tools/codebook';
 
 import ImageStrip from '../containers/ImageStripContainer'
+import Map from './Map';
 import { updateUser, updateUserDone } from '../actions/user'
 import validate from '../validators/ProfileValidator';
 
@@ -271,7 +273,6 @@ class Profile extends React.Component {
 
 		}
 
-
 		return(
 				<div className="row" style={{background: '#FFFFFF', boxShadow: '4px 4px 8px #EEE', minHeight: this.state.height}}>
 					<div className="col-md-12">
@@ -282,6 +283,10 @@ class Profile extends React.Component {
 								{this.props.name}, {this.props.age}
 							</h1>
 							<ImageStrip write={this.props.write} userIndex={this.props.userIndex} />
+							<h2>Poloha</h2>
+							<div className="row" style={{height: 250}}>
+								<Map center={{lat: this.props.lat, lng: this.props.lng}} />
+							</div>
 							<h2>Osobní údaje</h2>
 							<table className="col-md-8">
 								<tbody>

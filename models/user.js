@@ -68,7 +68,8 @@ var user = {
 		}
 
 		if(data.id) {
-			const sql = `SELECT u.id,u.name,u.email,u.birthdate,i.name AS image,i.extension,chatprice,(UNIX_TIMESTAMP(last_activity)*1000) AS lastActivity 
+			const sql = `SELECT u.id,u.name,u.email,u.birthdate,i.name AS image,i.extension,chatprice,latitude,longitude,
+			(UNIX_TIMESTAMP(last_activity)*1000) AS lastActivity 
 			FROM user u 
 			JOIN image i ON i.user_id=u.id AND i.avatar=1 
 			WHERE u.id IN (?) AND last_activity > ?`;
@@ -97,7 +98,8 @@ var user = {
 			const min = new Date(Date.now() - (data.maxage * 1 + 1) * 31556926000);
 			const max = new Date(Date.now() - (data.minage * 1 - 1) * 31556926000);
 
-			const sql = `SELECT u.id,u.name,u.email,u.birthdate,i.name AS image,i.extension,u.chatprice,(UNIX_TIMESTAMP(last_activity)*1000) AS lastActivity 
+			const sql = `SELECT u.id,u.name,u.email,u.birthdate,i.name AS image,i.extension,u.chatprice,latitude,longitude,
+			(UNIX_TIMESTAMP(last_activity)*1000) AS lastActivity 
 			FROM user u 
 			JOIN image i ON i.user_id=u.id AND i.avatar=1 
 			WHERE ${sex} u.active > 0 AND birthdate BETWEEN ? AND ? AND u.id != ? AND orientation IN (?) AND last_activity > ?
@@ -196,7 +198,7 @@ var user = {
 
 	getUser(id, done) {
 		const sql = `SELECT 
-			u.id,u.name,birthdate,sex,orientation,relationship,tall,weight,experience,hair,eyes,account,
+			u.id,u.name,birthdate,sex,orientation,relationship,tall,weight,experience,hair,eyes,account,latitude,longitude,
 			show_weight AS showWeight,
 			hair_long AS hairLong,
 			description,email,credits,chatprice,

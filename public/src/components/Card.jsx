@@ -1,7 +1,7 @@
 
 import React from 'react'
 
-import { getAge } from '../tools/utils';
+import { getAge, getDistanceFromLatLonInKm } from '../tools/utils';
 
 export default class Card extends React.Component {
 
@@ -37,6 +37,15 @@ export default class Card extends React.Component {
 
 		let price = Math.ceil(this.props.data.chatprice*1.15);
 
+		if(this.props.data.latitude && this.props.data.longitude && this.props.latitude && this.props.longitude) {
+			var distJsx =
+				<span>
+					{Math.round(getDistanceFromLatLonInKm(this.props.data.latitude, this.props.data.longitude, this.props.latitude, this.props.longitude))} km daleko
+				</span>
+		} else {
+			var distJsx = <span>&nbsp;</span>;
+		}
+
 		return(
 			<div className="col-lg-3" onClick={this.redirect.bind(this)} >
 				<div className="col-sm-12" style={style}>
@@ -47,6 +56,9 @@ export default class Card extends React.Component {
 					<h4 style={{paddingLeft: 12}}>
 						{this.props.data.name.split(' ')[0]}, {getAge(this.props.data.birthdate)}
 					</h4>
+					<div style={{paddingLeft: 12}}>
+						{distJsx}
+					</div>
 					<div className="row">
 						<div className="col-md-6">
 							<div style={{width: 32, height: 32, backgroundImage: 'url("/img/picture.png")', textAlign: 'center', paddingTop: 6, color: 'blue', margin: 'auto'}} onClick={this.openChat.bind(this)} title={'Začít chat za ' + price + ' kreditů za hodinu'}>

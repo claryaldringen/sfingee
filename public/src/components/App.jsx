@@ -7,6 +7,7 @@ import ChatDialog from '../containers/ChatDialogContainer'
 import Messages from '../containers/MessagesContainer'
 import Avatar from '../containers/AvatarContainer'
 import PayDialog from '../containers/PayDialogContainer'
+import { put } from 'axios';
 
 import { getAuthHash } from "../tools/auth"
 
@@ -46,6 +47,11 @@ export default class App extends React.Component {
 
 	componentDidMount() {
 		this.socket.emit('fuck', JSON.stringify({authhash: getAuthHash()}));
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition((position) => {
+				put('/api/user', {authhash: getAuthHash(), latitude: position.coords.latitude, longitude: position.coords.longitude});
+			});
+		}
 	}
 
 	render() {

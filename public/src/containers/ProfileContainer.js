@@ -97,6 +97,8 @@ function mapStateToProps(state, ownProps) {
 	  write: user.id == state.user.user.id,
 		sex: user.sex,
 		chatprice: user.chatprice,
+		lat: user.latitude,
+		lng: user.longitude,
 		initialValues: {
     	name: user.name,
 			day: date[2],
