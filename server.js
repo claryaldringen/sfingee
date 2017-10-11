@@ -15,6 +15,15 @@ var User = require('./models/user');
 
 var app = express();
 
+app.use(function (req, res, next) {
+	const host = req.get('host');
+	if(host != 'sfingee.com' && host != 'localhost:8080') {
+		res.redirect(301, 'https://sfingee.com' + req.path)
+		return;
+	}
+	next();
+});
+
 mailer.extend(app, config.smtp);
 
 apiRouter.mailer = app.mailer;
