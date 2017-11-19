@@ -15,14 +15,14 @@ var User = require('./models/user');
 
 var app = express();
 
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
 	const host = req.get('host');
-	if(host != 'sfingee.com' && host != 'localhost:8080') {
+	if(host != 'sfingee.com' && host.indexOf('localhost') === -1) {
 		res.redirect(301, 'https://sfingee.com' + req.path)
 		return;
 	}
-	next();
-});
+	next()
+})
 
 mailer.extend(app, config.smtp);
 
@@ -36,7 +36,7 @@ app.use(bodyParser.json());
 app.use('/api', apiRouter);
 app.use('/', staticRouter);
 app.use(express.static('public', {maxage: 86400000}));
-app.use(favicon(path.join(__dirname,'public','img','favicon.ico')));
+app.use(favicon(path.join(__dirname,'src','img','favicon.ico')));
 
 app.use(function(req, res, next) {
 	res.status(400);

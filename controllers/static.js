@@ -1,10 +1,10 @@
 var router = require('express').Router();
-
+var path = require('path');
 var User = require('../models/user');
 var cache = require('../models/cache');
 
 router.get(['/', '/app/*'], (req, res) => {
-	res.render('index', {});
+	res.sendFile(path.resolve(__dirname + '/../public/index.html'));
 });
 
 router.get('/termsofuse', (req, res) => {

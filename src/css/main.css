@@ -1,0 +1,11 @@
+
+@font-face {
+	font-family: 'Swing';
+    src: url('../fonts/swing.ttf');
+}
+
+.jumbotron {
+    color: #FFF;
+    height: 480px;
+    background: url('../img/jumbotron.jpg') 100% 480px;
+}

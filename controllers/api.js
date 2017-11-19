@@ -3,7 +3,7 @@ var md5 = require('md5');
 var multer = require('multer');
 var path = require('path');
 var mkdirp = require('mkdirp');
-var sharp = require('sharp');
+var gm = require('gm');
 
 var User = require('../models/user');
 var Image = require('../models/image');
@@ -44,9 +44,9 @@ router.route('/user').post(upload.single('image'), (req, res) => {
 	let user = req.body;
 	user.image = req.file.filename;
 	const smallName = req.file.filename.replace('.', 'sm.');
-	sharp('./public/uploads/' + req.body.email + '/' + req.file.filename)
+	gm('./public/uploads/' + req.body.email + '/' + req.file.filename)
 		.resize(160)
-		.toFile('./public/uploads/' + req.body.email + '/' + smallName, (err, info) => {
+		.write('./public/uploads/' + req.body.email + '/' + smallName, (err, info) => {
 			if (err) {
 				console.log(err);
 				return;
