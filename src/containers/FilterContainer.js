@@ -53,7 +53,7 @@ function mapStateToProps(state, ownProps) {
 		homo: state.filter.homo,
 		bi: state.filter.bi,
 		online: state.filter.online,
-		visible: state.routing.locationBeforeTransitions.pathname == '/app/people',
+		visible: true, //state.routing.locationBeforeTransitions.pathname == '/app/people',
 		limit: state.filter.limit
 	}
 }

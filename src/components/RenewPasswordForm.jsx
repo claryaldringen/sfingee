@@ -1,10 +1,6 @@
 
 import React from 'react'
 import { Field, reduxForm, SubmissionError } from 'redux-form'
-import { push } from 'react-router-redux'
-
-const { DOM: { input } } = React
-
 import { renderInput } from './InputField'
 import validate from '../validators/RenewPasswordFormValidator'
 import { sendEmail, sendFailure } from '../actions/user'

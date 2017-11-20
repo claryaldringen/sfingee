@@ -42,7 +42,7 @@ function mapStateToProps(state, ownProps) {
 	var user = {name: '', birthdate: '1998-01-01', sex: 0, relationship: 0}
   for(var userIndex = 0; userIndex < state.people.length; userIndex++) {
     user = state.people[userIndex]
-    if(user.id == ownProps.params.userId) break
+    if(user.id == ownProps.match.params.userId) break
   }
 	if(user == null || user.sex == null) return {}
 

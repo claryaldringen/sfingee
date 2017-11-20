@@ -1,13 +1,12 @@
 
 import React from 'react'
 import { Provider } from 'react-redux'
-import { Router, Route, IndexRoute } from 'react-router'
+import { Route, Switch } from 'react-router'
+import { ConnectedRouter } from 'react-router-redux'
 
 import App from '../containers/AppContainer'
 import HomePage from '../containers/HomePageContainer'
-import PeoplePage from '../containers/PeopleContainer'
 import Renew from '../containers/RenewContainer'
-import Profile from '../containers/ProfileContainer'
 import NotFound from './NotFound'
 
 export default class Root extends React.Component {
@@ -18,15 +17,14 @@ export default class Root extends React.Component {
 
 		return(
 			<Provider store={store}>
-				<Router history={history}>
-					<Route path="/app" component={App}>
-						<Route path="people" component={PeoplePage}/>
-						<Route path="profile/:userId" component={Profile} />
-					</Route>
-					<Route path="/renewpassword/:hash" component={Renew} />
-					<Route path="/" component={HomePage} />
-					<Route path="*" component={NotFound} />
-				</Router>
+				<ConnectedRouter history={history}>
+					<div>
+						<Switch>
+							<Route path="/app" component={App} />
+							<Route path="/" component={HomePage} />
+						</Switch>
+					</div>
+				</ConnectedRouter>
 			</Provider>
 		)
 	}

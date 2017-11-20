@@ -2,7 +2,8 @@
 import React from 'react'
 import { Field, reduxForm, SubmissionError } from 'redux-form'
 import Dropzone from 'react-dropzone'
-const { DOM: { input } } = React
+
+// const { DOM: { input } } = React
 
 import { renderInput, renderSelect, renderDateField } from './InputField'
 

@@ -6,8 +6,6 @@ import validate from '../validators/SignUpFormValidator'
 import { uploadImages, resetProgress, setImages } from '../actions/user'
 import { hideUploadDialog } from "../actions/dialogs"
 
-const { DOM: { input } } = React
-
 class UploadForm extends React.Component{
 
 	validateAndUpload(values, dispatch) {

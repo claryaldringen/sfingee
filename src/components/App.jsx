@@ -1,12 +1,15 @@
 
 import React from 'react'
 import io from 'socket.io-client'
+import { Route } from 'react-router'
 
 import Filter from '../containers/FilterContainer'
 import ChatDialog from '../containers/ChatDialogContainer'
 import Messages from '../containers/MessagesContainer'
 import Avatar from '../containers/AvatarContainer'
 import PayDialog from '../containers/PayDialogContainer'
+import PeoplePage from '../containers/PeopleContainer'
+import Profile from '../containers/ProfileContainer'
 import { put } from 'axios'
 
 import { getAuthHash } from "../tools/auth"
@@ -64,6 +67,8 @@ export default class App extends React.Component {
 						<Messages send={this.send.bind(this)} />
 					</div>
 					<div className="col-sm-9">
+						<Route path="/app/people" component={PeoplePage} exact={true} />
+						<Route path="/app/profile/:userId" component={Profile} exact={true} />
 					{this.props.children}
 					</div>
 				</div>

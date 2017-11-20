@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { Field, reduxForm, SubmissionError } from 'redux-form'
+import { Field, reduxForm } from 'redux-form'
 
 import { renderInput, renderSelect, renderDateField, renderTextArea } from './InputField'
 import { getRelationship, getOrientation, getEyes, getHair, getHairLong, getExperience } from '../tools/codebook'
@@ -12,8 +12,6 @@ import validate from '../validators/ProfileValidator'
 
 import ChatPng from '../img/chat.png'
 import SpinnerGif from '../img/spinner.gif'
-
-const { DOM: { input } } = React
 
 const saveProfile = (values, dispatch) => {
 	return dispatch(updateUser(values)).then((result) => {
@@ -33,7 +31,7 @@ class Profile extends React.Component {
 	openChat(event) {
 		event.stopPropagation()
 		event.preventDefault()
-		this.props.openChat(this.props.params.userId)
+		this.props.openChat(this.props.match.params.userId)
 	}
 
 	updateDimensions() {
@@ -51,7 +49,7 @@ class Profile extends React.Component {
 	}
 
 	componentWillMount() {
-		this.props.load(this.props.params.userId)
+		this.props.load(this.props.match.params.userId)
 	}
 
 	render() {
@@ -276,38 +274,45 @@ class Profile extends React.Component {
 
 		}
 
-		return(
-				<div className="row" style={{background: '#FFFFFF', boxShadow: '4px 4px 8px #EEE', minHeight: this.state.height}}>
-					<div className="col-md-12">
-						<form onSubmit={this.props.handleSubmit(saveProfile)} className="form-horizontal">
-							{chat}
-							<h1>
-								<div style={{backgroundColor: online, border: 'solid 1px ' + bOnline, width: 16, height: 16, borderRadius: 8, float: 'left', margin: 12}} title={title}/>
-								{this.props.name}, {this.props.age}
-							</h1>
-							<ImageStrip write={this.props.write} userIndex={this.props.userIndex} />
-							<h2>Poloha</h2>
-							<div className="row" style={{height: 250}}>
-								<Map center={{lat: this.props.lat, lng: this.props.lng}} />
-							</div>
-							<h2>Osobní údaje</h2>
-							<table className="col-md-8">
-								<tbody>
-									{name}
-									{birthdate}
-									{description}
-									{orientation}
-									{relationship}
-									{visage}
-									{experience}
-									{chatPrice}
-									{account}
-									{button}
-								</tbody>
-							</table>
-						</form>
-					</div>
+		let MapContainer = null
+		if(this.props.lat && this.props.lng) {
+			MapContainer = <div>
+				<h2>Poloha</h2>
+				<div className="row" style={{height: 250}}>
+					<Map center={{lat: this.props.lat, lng: this.props.lng}} />
 				</div>
+			</div>
+		}
+
+		return(
+			<div className="row" style={{background: '#FFFFFF', boxShadow: '4px 4px 8px #EEE', minHeight: this.state.height}}>
+				<div className="col-md-12">
+					<form onSubmit={this.props.handleSubmit(saveProfile)} className="form-horizontal">
+						{chat}
+						<h1>
+							<div style={{backgroundColor: online, border: 'solid 1px ' + bOnline, width: 16, height: 16, borderRadius: 8, float: 'left', margin: 12}} title={title}/>
+							{this.props.name}, {this.props.age}
+						</h1>
+						<ImageStrip write={this.props.write} userIndex={this.props.userIndex} />
+						<h2>Osobní údaje</h2>
+						<table className="col-md-8">
+							<tbody>
+								{name}
+								{birthdate}
+								{description}
+								{orientation}
+								{relationship}
+								{visage}
+								{experience}
+								{chatPrice}
+								{account}
+								{button}
+							</tbody>
+						</table>
+					</form>
+					{MapContainer}
+				</div>
+			</div>
 		)
 	}
 
